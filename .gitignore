@@ -1,0 +1,9 @@
+firmware/**/config.h
+.env
+__pycache__/
+.venv/
+*.wav
+.pytest_cache/
+build/
+docs/plans/
+memoria/

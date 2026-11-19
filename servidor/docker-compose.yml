@@ -1,0 +1,36 @@
+# Projeto Compose do Dokploy. O Traefik (rede dokploy-network) roteia o domínio
+# para a porta 8000 do serviço "voz"; nenhuma porta é publicada no host.
+services:
+  voz:
+    build: .
+    restart: unless-stopped
+    environment:
+      TOKEN_PLACA: ${TOKEN_PLACA}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      PROVEDOR_VOZ: ${PROVEDOR_VOZ:-gemini}
+      MODELO_VOZ: ${MODELO_VOZ:-}
+      VOZ: ${VOZ:-}
+      MODELO_TTS: ${MODELO_TTS:-}
+      VOZ_TTS: ${VOZ_TTS:-}
+      PROACTIVE_AUDIO: ${PROACTIVE_AUDIO:-1}
+      JANELA_CONTINUACAO_S: ${JANELA_CONTINUACAO_S:-8}
+      ESPERA_RESPOSTA_S: ${ESPERA_RESPOSTA_S:-6}
+      WORKSPACE_DIR: /home/voz/workspace
+      CLAUDE_TIMEOUT_S: ${CLAUDE_TIMEOUT_S:-1800}
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN}
+      GH_TOKEN: ${GH_TOKEN}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - voz_home:/home/voz
+    expose:
+      - "8000"
+    networks:
+      - dokploy-network
+
+volumes:
+  voz_home:
+
+networks:
+  dokploy-network:
+    external: true

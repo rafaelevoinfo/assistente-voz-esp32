@@ -1,0 +1,11 @@
+# Tabela de particoes do AssistenteVoz (16 MB). Igual a "ESP SR 16M", mas com
+# app0 de 6 MB e sem app1 (sem OTA): ESP-SR + Wi-Fi + TLS nao cabem em 3 MB.
+# As particoes "spiffs" e "model" ficam nos MESMOS enderecos da ESP SR 16M,
+# entao os modelos de voz ja gravados em 0xC10000 continuam validos.
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,       0x9000,   0x5000,
+otadata,  data, ota,       0xe000,   0x2000,
+app0,     app,  ota_0,    0x10000, 0x600000,
+spiffs,   data, spiffs,  0x610000, 0x600000,
+model,    data, spiffs,  0xC10000, 0x3E0000,
+coredump, data, coredump,0xFF0000,  0x10000,
