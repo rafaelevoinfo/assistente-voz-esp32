@@ -11,6 +11,10 @@ O protocolo está em [`../../docs/contrato.md`](../../docs/contrato.md).
 
 ## Hardware
 
+![Ligações](../../docs/ligacoes.png)
+
+Diagrama gerado por [`docs/gerar_ligacoes.py`](../../docs/gerar_ligacoes.py) (linha tracejada = MAX98357A, quando chegar).
+
 | INMP441 | ESP32-S3 |
 |---|---|
 | VDD | 3V3 (**nunca 5V**) |
