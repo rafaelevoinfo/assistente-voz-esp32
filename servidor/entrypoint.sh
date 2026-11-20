@@ -4,6 +4,16 @@ set -e
 WORKSPACE_DIR="${WORKSPACE_DIR:-/home/voz/workspace}"
 mkdir -p "$WORKSPACE_DIR" "$HOME/.claude"
 
+# Memória (CONTEXTO.md + historico.jsonl): na 1ª inicialização copia o modelo do
+# CONTEXTO.md. Nunca sobrescreve um CONTEXTO.md já existente (o do usuário).
+if [ -n "${MEMORIA_DIR:-}" ]; then
+  mkdir -p "$MEMORIA_DIR"
+  if [ ! -f "$MEMORIA_DIR/CONTEXTO.md" ] && [ -f /opt/voz/CONTEXTO.example.md ]; then
+    cp /opt/voz/CONTEXTO.example.md "$MEMORIA_DIR/CONTEXTO.md"
+    echo "memória: CONTEXTO.md criado a partir do modelo em $MEMORIA_DIR" >&2
+  fi
+fi
+
 # git autenticado pelo gh (clonar, criar branches, push) quando houver token
 if [ -n "${GH_TOKEN:-}" ]; then
   gh auth setup-git || echo "aviso: gh auth setup-git falhou" >&2
