@@ -14,12 +14,17 @@ services:
       MODELO_TTS: ${MODELO_TTS:-}
       VOZ_TTS: ${VOZ_TTS:-}
       PROACTIVE_AUDIO: ${PROACTIVE_AUDIO:-1}
+      BUSCA_GOOGLE: ${BUSCA_GOOGLE:-true}
       JANELA_CONTINUACAO_S: ${JANELA_CONTINUACAO_S:-8}
       ESPERA_RESPOSTA_S: ${ESPERA_RESPOSTA_S:-6}
+      ESCUTA_MAX_S: ${ESCUTA_MAX_S:-60}
       WORKSPACE_DIR: /home/voz/workspace
+      MEMORIA_DIR: ${MEMORIA_DIR:-/home/voz/memoria}
       CLAUDE_TIMEOUT_S: ${CLAUDE_TIMEOUT_S:-1800}
       CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN}
       GH_TOKEN: ${GH_TOKEN}
+      GIT_USER_NAME: ${GIT_USER_NAME:-Assistente de voz}
+      GIT_USER_EMAIL: ${GIT_USER_EMAIL:-voz@localhost}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - voz_home:/home/voz
