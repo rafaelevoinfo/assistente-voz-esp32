@@ -20,7 +20,15 @@ O protocolo está em [`../../docs/contrato.md`](../../docs/contrato.md).
 | SCK | GPIO5 |
 | SD | GPIO8 |
 
-LEDs da placa (acendem com LOW): **TX (GPIO43) = conectado ao servidor**, **RX (GPIO44) = ouvindo**.
+**LED RGB (GPIO48)** indica a situação:
+
+| Cor | Situação |
+|---|---|
+| 🔴 Vermelho | Sem conexão (Wi-Fi ou servidor) |
+| 🟢 Verde | Conectado, esperando "Hi ESP" |
+| 🔵 Azul | Ouvindo (após o "Hi ESP" e na janela de continuação) |
+
+O LED RGB só funciona com o **jumper "RGB" da placa fechado** com solda. O brilho é ajustado em `LED_BRILHO`, no `.ino`. Os LEDs TX/RX não são mais usados.
 
 **Sinal sonoro de "estou ouvindo":** logo após o "Hi ESP" (junto com o LED RX acendendo), a placa manda `BEEP`. Na janela de continuação depois de uma resposta, só o LED acende, sem som ao notebook, que toca dois tons curtos. O mic descarta ~0,6 s de áudio logo depois, para o próprio bipe não ser enviado ao servidor como fala.
 
@@ -70,7 +78,6 @@ A IDE não grava os modelos de voz. Se eles nunca foram gravados na placa, use o
 - **Uma única frase de comando trava a MultiNet7 no boot** (StoreProhibited em `build_fsts`). Por isso o `audio.cpp` registra 4 frases, mesmo sem usar o modo de comandos.
 - **Wi-Fi não conecta:** o log mostra `Wi-Fi falhou, motivo N` (15/204 = senha errada, 201 = rede não encontrada). O ESP32-S3 só conecta em redes **2,4 GHz**.
 - **Em produção, o TLS não verifica o certificado** do servidor (protótipo).
-- **LED RGB (GPIO48):** só funciona com o jumper "RGB" da placa soldado.
 
 ## Logs
 

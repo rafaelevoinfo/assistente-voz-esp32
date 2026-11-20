@@ -32,8 +32,11 @@
 //      nunca envia mic; um listen que chegue nesse meio e adiado.
 //    session_end (qualquer estado) e queda da conexao -> ESPERANDO_WAKE.
 //
-//  LEDs (acendem com LOW): TX/GPIO43 = conectado ao servidor,
-//                          RX/GPIO44 = ouvindo (AGUARDANDO_LISTEN ou ENVIANDO_MIC).
+//  LED RGB (WS2812 no GPIO48; exige o jumper "RGB" da placa fechado):
+//    vermelho = sem conexao (Wi-Fi ou servidor)
+//    verde    = conectado, esperando "Hi ESP"
+//    azul     = ouvindo (AGUARDANDO_LISTEN ou ENVIANDO_MIC)
+//  Os LEDs TX/RX (GPIO43/44) nao sao mais usados.
 //
 //  SINAL "ESTOU OUVINDO": ao detectar "Hi ESP" (junto com o LED RX acendendo),
 //    a placa manda BEEP ao notebook, que gera o som. A janela de continuacao
@@ -71,8 +74,8 @@
 
 #define FW_VERSAO "1.0"
 
-#define LED_CONECTADO 43  // TX
-#define LED_MIC       44  // RX
+#define LED_RGB_PINO  48
+#define LED_BRILHO    25   // 0-255 (o WS2812 e muito forte; 25 ja e bem visivel)
 
 #define RECONEXAO_MS            3000
 #define RECONEXAO_AUTH_MS       30000   // depois de 4401
@@ -141,8 +144,20 @@ static const int16_t *filaRetirar() {
 
 // ------------------------------------------------------------------ util
 
-static void ledMic(bool aceso) { digitalWrite(LED_MIC, aceso ? LOW : HIGH); }
-static void ledConectado(bool aceso) { digitalWrite(LED_CONECTADO, aceso ? LOW : HIGH); }
+static void ledCor(uint8_t r, uint8_t g, uint8_t b) {
+  static uint32_t atual = 0xFFFFFFFF;
+  uint32_t nova = ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
+  if (nova == atual) return;  // so reescreve o LED quando a cor muda
+  atual = nova;
+  rgbLedWrite(LED_RGB_PINO, r, g, b);
+}
+
+// Cor do LED a partir do estado atual (vermelho/verde/azul).
+static void atualizarLed() {
+  if (!conectado) ledCor(LED_BRILHO, 0, 0);
+  else if (ouvindo(estado)) ledCor(0, 0, LED_BRILHO);
+  else ledCor(0, LED_BRILHO, 0);
+}
 
 static void mudarEstado(Estado novo) {
   if (novo == estado) return;
@@ -150,7 +165,7 @@ static void mudarEstado(Estado novo) {
   Estado anterior = estado;
   estado = novo;
   estadoDesde = millis();
-  ledMic(ouvindo(estado));
+  atualizarLed();
   // Sinal sonoro so depois do "Hi ESP" (a janela de continuacao apos uma
   // resposta acende o LED, mas sem som: o usuario achou irritante).
   if (novo == AGUARDANDO_LISTEN && !ouvindo(anterior)) {
@@ -282,7 +297,7 @@ static void aoConectar() {
   conectado = true;
   conectouEm = millis();
   recebeuDoServidor = false;
-  ledConectado(true);
+  atualizarLed();
   logMsg("conectado ao servidor");
   char hello[48];
   snprintf(hello, sizeof(hello), "{\"type\":\"hello\",\"fw\":\"%s\"}", FW_VERSAO);
@@ -293,7 +308,7 @@ static void aoConectar() {
 static void aoDesconectar(const char *motivo) {
   bool estavaConectado = conectado;
   conectado = false;
-  ledConectado(false);
+  atualizarLed();
   abortarReproducao();
   mudarEstado(ESPERANDO_WAKE);
 
@@ -389,10 +404,7 @@ static void iniciarWebSocket() {
 }
 
 void setup() {
-  pinMode(LED_CONECTADO, OUTPUT);
-  pinMode(LED_MIC, OUTPUT);
-  ledConectado(false);
-  ledMic(false);
+  ledCor(LED_BRILHO, 0, 0);  // vermelho: ainda sem conexao
 
   notebookIniciar();
   delay(1500);
