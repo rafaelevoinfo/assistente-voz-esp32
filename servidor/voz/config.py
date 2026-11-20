@@ -39,6 +39,7 @@ class Config:
     openai_api_key: str = ""
     voz_tts: str = VOZ_TTS_PADRAO
     proactive_audio: bool = True
+    busca_google: bool = True  # ferramenta nativa do Gemini (Grounding with Google Search)
 
     @classmethod
     def do_ambiente(cls, env: Mapping[str, str] | None = None) -> "Config":
@@ -89,4 +90,5 @@ class Config:
             openai_api_key=openai,
             voz_tts=texto("VOZ_TTS", voz if provedor == "gemini" else VOZ_TTS_PADRAO),
             proactive_audio=texto("PROACTIVE_AUDIO", "1").lower() not in ("0", "false", "nao", "não", "no"),
+            busca_google=texto("BUSCA_GOOGLE", "1").lower() not in ("0", "false", "nao", "não", "no"),
         )

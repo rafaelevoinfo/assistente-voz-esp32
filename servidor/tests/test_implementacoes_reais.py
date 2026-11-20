@@ -275,3 +275,33 @@ def test_monta_pipeline_com_memoria_sem_rede():
 
     sessao = FabricaSessaoPipecat(CONFIG).criar(EVENTOS)
     assert type(sessao.montar(None, "Meu nome é Rafael.")).__name__ == "PipelineWorker"
+
+
+# ------------------------------------------- busca no Google (ferramenta nativa do Gemini)
+
+def _ferramentas_gemini(config):
+    from pipecat.adapters.llm.schemas.tools_schema import AdapterType
+
+    from voz.sessao_pipecat import FabricaSessaoPipecat
+
+    sessao = FabricaSessaoPipecat(config).criar(EVENTOS)
+    esquema = sessao.ferramentas()
+    return [f.name for f in esquema.standard_tools], (esquema.custom_tools or {}).get(AdapterType.GEMINI, [])
+
+
+def test_busca_google_ligada_por_padrao():
+    padrao, nativas = _ferramentas_gemini(CONFIG)
+    assert padrao == ["tarefa_de_codigo"]
+    assert {"google_search": {}} in nativas
+
+
+def test_busca_google_pode_ser_desligada():
+    config = Config(token_placa="t", google_api_key="g", busca_google=False)
+    padrao, nativas = _ferramentas_gemini(config)
+    assert padrao == ["tarefa_de_codigo"] and nativas == []
+
+
+def test_prompt_orienta_buscar_informacao_atual():
+    from voz.sessao_pipecat import PROMPT_SISTEMA
+
+    assert "busca" in PROMPT_SISTEMA.lower() and "atual" in PROMPT_SISTEMA.lower()

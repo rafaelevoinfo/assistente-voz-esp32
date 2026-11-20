@@ -47,3 +47,9 @@ def test_config_proactive_audio():
     base = {"TOKEN_PLACA": "t", "GOOGLE_API_KEY": "g"}
     assert Config.do_ambiente(base).proactive_audio is True
     assert Config.do_ambiente({**base, "PROACTIVE_AUDIO": "0"}).proactive_audio is False
+
+
+def test_busca_google_configuravel():
+    assert Config.do_ambiente({"TOKEN_PLACA": "t", "GOOGLE_API_KEY": "g"}).busca_google is True
+    assert Config.do_ambiente({"TOKEN_PLACA": "t", "GOOGLE_API_KEY": "g", "BUSCA_GOOGLE": "true"}).busca_google is True
+    assert Config.do_ambiente({"TOKEN_PLACA": "t", "GOOGLE_API_KEY": "g", "BUSCA_GOOGLE": "false"}).busca_google is False

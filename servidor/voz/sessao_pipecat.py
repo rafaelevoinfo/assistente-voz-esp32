@@ -12,7 +12,7 @@ import logging
 
 import numpy as np
 from pipecat.adapters.llm.schemas.function_schema import FunctionSchema
-from pipecat.adapters.llm.schemas.tools_schema import ToolsSchema
+from pipecat.adapters.llm.schemas.tools_schema import AdapterType, ToolsSchema
 from pipecat.frames.frames import (
     InputAudioRawFrame,
     LLMFullResponseEndFrame,
@@ -40,7 +40,10 @@ PROMPT_SISTEMA = (
     "natural. Todo pedido relacionado a programação, código, sistemas, sites, bugs, deploy ou projetos "
     "de software deve ser enviado IMEDIATAMENTE à ferramenta tarefa_de_codigo, com o pedido do usuário "
     "copiado literalmente no parâmetro 'pedido'; nunca tente resolver programação por conta própria. "
-    "Depois de chamar a ferramenta, confirme em uma frase curta. Se receber um contexto de mensagem "
+    "Depois de chamar a ferramenta, confirme em uma frase curta. Quando a pergunta depender de "
+    "informação atual ou que muda com o tempo (notícias, placares, cotações, previsão do tempo, "
+    "horários, preços, eventos recentes), use a busca no Google antes de responder; para conhecimento "
+    "geral, responda direto, sem buscar. Se receber um contexto de mensagem "
     "anterior, o usuário pode estar respondendo a ela; responda apenas se a fala for dirigida a você ou "
     "relacionada ao assunto; caso contrário, fique em silêncio."
 )
@@ -148,11 +151,18 @@ class SessaoPipecat:
 
     # ---------------------------------------------------------- provedor
 
+    def ferramentas(self) -> ToolsSchema:
+        """tarefa_de_codigo (nossa) + busca no Google (nativa do Gemini, se BUSCA_GOOGLE=1)."""
+        nativas = {}
+        if self._config.provedor_voz == "gemini" and self._config.busca_google:
+            nativas[AdapterType.GEMINI] = [{"google_search": {}}]
+        return ToolsSchema(standard_tools=[ESQUEMA_TAREFA_DE_CODIGO], custom_tools=nativas or None)
+
     def criar_llm(self, memoria: str | None = None):
         """Cria o serviço speech-to-speech do provedor configurado (sem abrir conexão)."""
         c = self._config
         instrucao = instrucao_sistema(memoria)
-        ferramentas = ToolsSchema(standard_tools=[ESQUEMA_TAREFA_DE_CODIGO])
+        ferramentas = self.ferramentas()
         if c.provedor_voz == "gemini":
             from google.genai.types import ProactivityConfig
             from pipecat.services.google.gemini_live.llm import GeminiLiveLLMService
