@@ -148,7 +148,7 @@ Para não precisar explicar tudo sempre, toda sessão de voz começa com uma "me
 - **Leitura das últimas 5:** se o arquivo atual tiver menos de 5 trocas, completa com as mais recentes do **imediatamente anterior** (`historico.1.jsonl`).
 - Linhas corrompidas são ignoradas, sem derrubar o servidor.
 
-**Onde ficam os arquivos:** na pasta `MEMORIA_DIR` (padrão `/home/voz/assistente`, dentro do volume persistente). Localmente, `memoria/` na raiz do projeto, fora do git.
+**Onde ficam os arquivos:** na pasta `MEMORIA_DIR` (padrão `/home/voz/memoria`, dentro do volume persistente). Localmente, `memoria/` na raiz do projeto, fora do git.
 
 ## 8. Segurança
 

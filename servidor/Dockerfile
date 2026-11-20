@@ -37,7 +37,7 @@ COPY CONTEXTO.example.md /opt/voz/CONTEXTO.example.md
 USER voz
 ENV HOME=/home/voz \
     WORKSPACE_DIR=/home/voz/workspace \
-    MEMORIA_DIR=/home/voz/assistente
+    MEMORIA_DIR=/home/voz/memoria
 WORKDIR /home/voz
 RUN mkdir -p /home/voz/workspace /home/voz/.claude
 
