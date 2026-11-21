@@ -72,7 +72,7 @@
 #include "audio.h"
 #include "notebook.h"
 
-#define FW_VERSAO "1.0"
+#define FW_VERSAO "1.1"
 
 #define LED_RGB_PINO  48
 #define LED_BRILHO    25   // 0-255 (o WS2812 e muito forte; 25 ja e bem visivel)
@@ -268,6 +268,10 @@ static void aoTexto(const char *json) {
     }
     recebendoAudio = true;
     notebookBegin(taxaAudio);
+    logMsg("memoria: heap interno livre %u (min %u), pilha do loop livre %u",
+           (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
+           (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL),
+           (unsigned)uxTaskGetStackHighWaterMark(NULL));
   } else if (strcmp(tipo, "audio_end") == 0) {
     if (!recebendoAudio) {
       logMsg("audio_end sem audio_start: ignorado");
@@ -402,6 +406,12 @@ static void iniciarWebSocket() {
   ws.setReconnectInterval(RECONEXAO_MS);
   ws.enableHeartbeat(PING_INTERVALO_MS, PONG_TIMEOUT_MS, PONG_FALHAS);
 }
+
+// O TLS (mbedTLS) roda dentro do ws.loop(): a pilha padrao de 8 KB do loop()
+// estoura e corrompe o heap (crash "Cache error" no malloc do Wi-Fi).
+// (fica aqui, e nao no topo, porque a macro define uma funcao e o
+// pre-processador do Arduino poria os prototipos antes do enum Estado)
+SET_LOOP_TASK_STACK_SIZE(16 * 1024);
 
 void setup() {
   ledCor(LED_BRILHO, 0, 0);  // vermelho: ainda sem conexao
