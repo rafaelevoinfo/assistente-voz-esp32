@@ -67,7 +67,8 @@ if not "%WORKSPACE_DIR%"=="" if not exist "%WORKSPACE_DIR%" mkdir "%WORKSPACE_DI
 rem Memoria local (CONTEXTO.md + historico.jsonl): pasta "memoria" na raiz, fora do git
 set "MEMORIA_DIR=%RAIZ%memoria"
 if not exist "%MEMORIA_DIR%" mkdir "%MEMORIA_DIR%" 2>nul
-if not exist "%MEMORIA_DIR%\CONTEXTO.md" copy "%SERVIDOR%\CONTEXTO.example.md" "%MEMORIA_DIR%\CONTEXTO.md" >nul
+rem CONTEXTO.md (instrucoes do assistente) vem do repositorio: sempre substitui
+copy /y "%SERVIDOR%\CONTEXTO.md" "%MEMORIA_DIR%\CONTEXTO.md" >nul
 
 if /i "%~1"=="teste" (
   echo Configuracao:

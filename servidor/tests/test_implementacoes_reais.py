@@ -23,11 +23,10 @@ async def _pedido(p):
 EVENTOS = EventosSessao(ao_audio=_audio, ao_fim_resposta=_fim, ao_pedido_codigo=_pedido)
 
 
-def test_prompt_sistema_exato():
-    from voz.sessao_pipecat import PROMPT_SISTEMA
+def test_sem_prompt_fixo_no_codigo():
+    import voz.sessao_pipecat as m
 
-    assert PROMPT_SISTEMA.startswith("Você é um assistente de voz em português do Brasil.")
-    assert "tarefa_de_codigo" in PROMPT_SISTEMA and PROMPT_SISTEMA.endswith("fique em silêncio.")
+    assert not hasattr(m, "PROMPT_SISTEMA")
 
 
 def test_fabrica_gemini_cria_sessao_sem_rede():
@@ -263,11 +262,10 @@ async def test_sumidouro_repassa_a_transcricao_do_modelo():
 
 
 def test_memoria_entra_na_instrucao_de_sistema():
-    from voz.sessao_pipecat import PROMPT_SISTEMA, instrucao_sistema
+    from voz.sessao_pipecat import instrucao_sistema
 
-    assert instrucao_sistema(None) == PROMPT_SISTEMA
-    texto = instrucao_sistema("## Informações fixas\nMeu nome é Rafael.")
-    assert texto.startswith(PROMPT_SISTEMA) and texto.endswith("Meu nome é Rafael.")
+    assert instrucao_sistema(None) == ""
+    assert instrucao_sistema("Meu nome é Rafael.") == "Meu nome é Rafael."
 
 
 def test_monta_pipeline_com_memoria_sem_rede():
@@ -301,7 +299,25 @@ def test_busca_google_pode_ser_desligada():
     assert padrao == ["tarefa_de_codigo"] and nativas == []
 
 
-def test_prompt_orienta_buscar_informacao_atual():
-    from voz.sessao_pipecat import PROMPT_SISTEMA
+# --------------------------------------------- CONTEXTO.md do repositório (instruções)
 
-    assert "busca" in PROMPT_SISTEMA.lower() and "atual" in PROMPT_SISTEMA.lower()
+def _contexto_repo() -> str:
+    from pathlib import Path
+
+    return (Path(__file__).resolve().parents[1] / "CONTEXTO.md").read_text(encoding="utf-8")
+
+
+def test_contexto_md_orienta_ferramenta_de_codigo():
+    texto = _contexto_repo()
+    assert "tarefa_de_codigo" in texto and "literalmente" in texto
+
+
+def test_contexto_md_orienta_buscar_informacao_atual():
+    texto = _contexto_repo().lower()
+    assert "busca" in texto and "atual" in texto
+
+
+def test_contexto_md_cabe_no_limite():
+    from voz.memoria import LIMITE_CONTEXTO_MD
+
+    assert len(_contexto_repo()) < LIMITE_CONTEXTO_MD

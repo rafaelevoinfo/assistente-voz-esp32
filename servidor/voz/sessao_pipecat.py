@@ -35,19 +35,6 @@ from voz.protocolo import TAXA_ENTRADA, TAXA_SAIDA
 
 log = logging.getLogger(__name__)
 
-PROMPT_SISTEMA = (
-    "Você é um assistente de voz em português do Brasil. Responda perguntas gerais de forma breve e "
-    "natural. Todo pedido relacionado a programação, código, sistemas, sites, bugs, deploy ou projetos "
-    "de software deve ser enviado IMEDIATAMENTE à ferramenta tarefa_de_codigo, com o pedido do usuário "
-    "copiado literalmente no parâmetro 'pedido'; nunca tente resolver programação por conta própria. "
-    "Depois de chamar a ferramenta, confirme em uma frase curta. Quando a pergunta depender de "
-    "informação atual ou que muda com o tempo (notícias, placares, cotações, previsão do tempo, "
-    "horários, preços, eventos recentes), use a busca no Google antes de responder; para conhecimento "
-    "geral, responda direto, sem buscar. Se receber um contexto de mensagem "
-    "anterior, o usuário pode estar respondendo a ela; responda apenas se a fala for dirigida a você ou "
-    "relacionada ao assunto; caso contrário, fique em silêncio."
-)
-
 ESQUEMA_TAREFA_DE_CODIGO = FunctionSchema(
     name="tarefa_de_codigo",
     description=(
@@ -92,8 +79,14 @@ def mensagem_de_contexto(contexto: str) -> dict:
 
 
 def instrucao_sistema(memoria: str | None) -> str:
-    """PROMPT_SISTEMA + memória (CONTEXTO.md e últimas trocas), se houver."""
-    return f"{PROMPT_SISTEMA}\n\n{memoria}" if memoria else PROMPT_SISTEMA
+    """Instrução de sistema = CONTEXTO.md (todas as instruções) + últimas trocas.
+
+    Não há prompt fixo no código: sem CONTEXTO.md o modelo fica sem instruções.
+    """
+    if not memoria:
+        log.warning("sem CONTEXTO.md: a sessão começa sem instruções de sistema")
+        return ""
+    return memoria
 
 
 class ColetorTranscricaoUsuario(FrameProcessor):

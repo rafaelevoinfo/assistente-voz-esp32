@@ -48,9 +48,9 @@ Copie `.env.example` para `.env` e preencha. **Nunca commite o `.env`.**
 
 ## Memória (CONTEXTO.md e histórico)
 
-Toda conversa começa com uma "memória" anexada à instrução do assistente (spec §7.2):
+A instrução de sistema de toda conversa é montada assim (spec §7.2); não há prompt fixo no código:
 
-- **`CONTEXTO.md`** em `MEMORIA_DIR`: informações fixas que **você escreve** (nome, preferências, projetos). É lido a cada conversa, então editar vale na próxima. Modelo: [`CONTEXTO.example.md`](CONTEXTO.example.md).
+- **[`CONTEXTO.md`](CONTEXTO.md)**: **todas as instruções do assistente** (personalidade, idioma, prática de inglês, quando usar a ferramenta `tarefa_de_codigo` e a busca, seus projetos). Fica versionado no repositório: edite, faça commit e o próximo deploy o copia para `MEMORIA_DIR`, **substituindo** o anterior (o `iniciar.bat` faz o mesmo localmente). Como é lido no início de cada conversa, uma edição direta em `MEMORIA_DIR` vale na hora, mas se perde no próximo deploy.
 - **As últimas 5 trocas** (pergunta → resposta, incluindo os resultados do Claude Code), tiradas das transcrições do Gemini e guardadas em `historico.jsonl`.
 
 Quando o arquivo chegaria a 10 MB, ele vira `historico.1.jsonl` (o anterior vira `.2`, e assim por diante), e um novo começa vazio. Ficam no máximo 7 arquivos.

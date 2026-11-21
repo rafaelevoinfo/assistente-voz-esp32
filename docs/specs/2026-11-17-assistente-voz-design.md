@@ -135,7 +135,7 @@ Levantamento feito em 2026-11-17, só leitura:
 
 Para não precisar explicar tudo sempre, toda sessão de voz começa com uma "memória" anexada à instrução de sistema:
 
-1. **`CONTEXTO.md`:** arquivo de texto livre escrito pelo usuário (nome, preferências, projetos, como quer as respostas). Ele é lido **a cada sessão**, então editar o arquivo vale na próxima conversa, sem reiniciar.
+1. **`CONTEXTO.md`:** arquivo de texto livre escrito pelo usuário (nome, preferências, projetos, como quer as respostas). Ele é lido **a cada sessão**, então editar o arquivo vale na próxima conversa, sem reiniciar. **Atualização (2026-11-21):** o `CONTEXTO.md` passou a conter **todas** as instruções de sistema (não há mais prompt fixo no código). Ele fica versionado em `servidor/CONTEXTO.md` e cada deploy o copia para `MEMORIA_DIR`, substituindo o anterior; o histórico é preservado.
 2. **As últimas 5 trocas** (5 pares pergunta → resposta), marcadas como **só referência**. O modelo não deve retomar esses assuntos se o usuário não pedir.
 
 **O que entra no histórico:**

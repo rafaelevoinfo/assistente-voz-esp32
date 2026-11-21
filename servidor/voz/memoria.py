@@ -1,4 +1,5 @@
-"""Memória do assistente: ``CONTEXTO.md`` (escrito pelo usuário) e histórico de trocas.
+"""Memória do assistente: ``CONTEXTO.md`` (todas as instruções de sistema; vem do repositório
+e é substituído a cada deploy) e histórico de trocas.
 
 O histórico fica em ``historico.jsonl`` (uma troca por linha). Quando o arquivo
 passaria de ``max_bytes`` ele é rotacionado: o atual vira ``historico.1.jsonl``, o
@@ -117,7 +118,7 @@ class Memoria:
         partes: list[str] = []
         contexto = self._contexto_md()
         if contexto:
-            partes.append("## Informações fixas sobre o usuário (CONTEXTO.md)\n" + contexto)
+            partes.append(contexto)  # o CONTEXTO.md já é a instrução de sistema completa
         trocas = self.historico.ultimas(TROCAS_NA_SESSAO)
         if trocas:
             linhas = ["## Conversas anteriores (apenas referência; não retome esses assuntos "
