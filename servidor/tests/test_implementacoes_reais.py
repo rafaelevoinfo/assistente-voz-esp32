@@ -264,8 +264,28 @@ async def test_sumidouro_repassa_a_transcricao_do_modelo():
 def test_memoria_entra_na_instrucao_de_sistema():
     from voz.sessao_pipecat import instrucao_sistema
 
-    assert instrucao_sistema(None) == ""
-    assert instrucao_sistema("Meu nome é Rafael.") == "Meu nome é Rafael."
+    assert instrucao_sistema("Instruções.", None) == "Instruções."
+    assert instrucao_sistema("Instruções.", "Trocas.") == "Instruções.\n\nTrocas."
+    assert instrucao_sistema("", None) == ""
+
+
+def test_instrucoes_lidas_do_arquivo_a_cada_sessao(tmp_path):
+    from voz.sessao_pipecat import carregar_instrucoes
+
+    arquivo = tmp_path / "INSTRUCTIONS.md"
+    assert carregar_instrucoes(str(arquivo)) == ""  # sem arquivo: sem instruções, sem erro
+    arquivo.write_text("versão 1", encoding="utf-8")
+    assert carregar_instrucoes(str(arquivo)) == "versão 1"
+    arquivo.write_text("versão 2", encoding="utf-8")
+    assert carregar_instrucoes(str(arquivo)) == "versão 2"
+
+
+def test_config_aponta_para_instructions_md_do_repositorio():
+    from pathlib import Path
+
+    assert Path(CONFIG.instrucoes_arquivo) == Path(__file__).resolve().parents[1] / "INSTRUCTIONS.md"
+    assert Config.do_ambiente({"TOKEN_PLACA": "t", "GOOGLE_API_KEY": "g",
+                               "INSTRUCOES_ARQUIVO": "/x/I.md"}).instrucoes_arquivo == "/x/I.md"
 
 
 def test_monta_pipeline_com_memoria_sem_rede():
@@ -299,25 +319,21 @@ def test_busca_google_pode_ser_desligada():
     assert padrao == ["tarefa_de_codigo"] and nativas == []
 
 
-# --------------------------------------------- CONTEXTO.md do repositório (instruções)
+# ------------------------------------------ INSTRUCTIONS.md do repositório (instruções)
 
-def _contexto_repo() -> str:
+def _instrucoes_repo() -> str:
     from pathlib import Path
 
-    return (Path(__file__).resolve().parents[1] / "CONTEXTO.md").read_text(encoding="utf-8")
+    return (Path(__file__).resolve().parents[1] / "INSTRUCTIONS.md").read_text(encoding="utf-8")
 
 
-def test_contexto_md_orienta_ferramenta_de_codigo():
-    texto = _contexto_repo()
+def test_instructions_md_orienta_ferramenta_de_codigo():
+    texto = _instrucoes_repo()
     assert "tarefa_de_codigo" in texto and "literalmente" in texto
 
 
-def test_contexto_md_orienta_buscar_informacao_atual():
-    texto = _contexto_repo().lower()
+def test_instructions_md_orienta_buscar_informacao_atual():
+    texto = _instrucoes_repo().lower()
     assert "busca" in texto and "atual" in texto
 
 
-def test_contexto_md_cabe_no_limite():
-    from voz.memoria import LIMITE_CONTEXTO_MD
-
-    assert len(_contexto_repo()) < LIMITE_CONTEXTO_MD

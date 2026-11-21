@@ -69,7 +69,7 @@ def criar_app(
     fila = FilaTarefas(executor, ao_concluir=ao_concluir)
     memoria = Memoria(config.memoria_dir) if config.memoria_dir else None
     if memoria is None:
-        log.info("MEMORIA_DIR não definido: sem CONTEXTO.md nem histórico")
+        log.info("MEMORIA_DIR não definido: sem histórico")
     conexao = ConexaoPlaca(config, fabrica, sintetizador, enfileirar=fila.enfileirar, caixa=caixa, memoria=memoria)
 
     atual: dict[str, WebSocket | None] = {"ws": None}

@@ -31,9 +31,9 @@ COPY voz ./voz
 RUN pip install .
 
 COPY --chmod=755 entrypoint.sh /entrypoint.sh
-# Instruções do assistente: o entrypoint copia para MEMORIA_DIR a cada inicialização
-# (cada deploy substitui o CONTEXTO.md pelo do repositório)
-COPY CONTEXTO.md /opt/voz/CONTEXTO.md
+# Instruções do assistente: ficam na imagem, então cada deploy traz a versão do repositório
+COPY INSTRUCTIONS.md /opt/voz/INSTRUCTIONS.md
+ENV INSTRUCOES_ARQUIVO=/opt/voz/INSTRUCTIONS.md
 
 USER voz
 ENV HOME=/home/voz \

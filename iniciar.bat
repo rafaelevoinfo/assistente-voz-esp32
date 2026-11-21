@@ -64,11 +64,11 @@ if "%CLAUDE_DEMO%"=="1" (
 )
 if not "%WORKSPACE_DIR%"=="" if not exist "%WORKSPACE_DIR%" mkdir "%WORKSPACE_DIR%" 2>nul
 
-rem Memoria local (CONTEXTO.md + historico.jsonl): pasta "memoria" na raiz, fora do git
+rem Memoria local (historico.jsonl): pasta "memoria" na raiz, fora do git.
+rem As instrucoes do assistente sao lidas de servidor\INSTRUCTIONS.md.
 set "MEMORIA_DIR=%RAIZ%memoria"
 if not exist "%MEMORIA_DIR%" mkdir "%MEMORIA_DIR%" 2>nul
-rem CONTEXTO.md (instrucoes do assistente) vem do repositorio: sempre substitui
-copy /y "%SERVIDOR%\CONTEXTO.md" "%MEMORIA_DIR%\CONTEXTO.md" >nul
+if exist "%MEMORIA_DIR%\CONTEXTO.md" del "%MEMORIA_DIR%\CONTEXTO.md"
 
 if /i "%~1"=="teste" (
   echo Configuracao:

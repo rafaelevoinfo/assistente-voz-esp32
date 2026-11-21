@@ -402,10 +402,10 @@ async def test_resultado_do_claude_code_vai_para_o_historico(tmp_path):
 
 
 async def test_sessao_recebe_a_memoria(tmp_path):
-    (tmp_path / "CONTEXTO.md").write_text("Meu nome é Rafael.", encoding="utf-8")
+    Historico(tmp_path).registrar("quanto é 2+2?", "Quatro.")
     a = await amb_com_memoria(tmp_path)
     await a.wake()
-    assert "Meu nome é Rafael." in a.fabrica.ultima.memorias[0]
+    assert "quanto é 2+2?" in a.fabrica.ultima.memorias[0]
 
 
 async def test_sem_memoria_continua_funcionando(amb):

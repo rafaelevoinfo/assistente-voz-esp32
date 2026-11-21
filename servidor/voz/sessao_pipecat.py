@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from pathlib import Path
 
 import numpy as np
 from pipecat.adapters.llm.schemas.function_schema import FunctionSchema
@@ -78,15 +79,21 @@ def mensagem_de_contexto(contexto: str) -> dict:
     }
 
 
-def instrucao_sistema(memoria: str | None) -> str:
-    """Instrução de sistema = CONTEXTO.md (todas as instruções) + últimas trocas.
+def carregar_instrucoes(caminho: str) -> str:
+    """Lê o INSTRUCTIONS.md a cada sessão (editar vale na próxima conversa).
 
-    Não há prompt fixo no código: sem CONTEXTO.md o modelo fica sem instruções.
+    Não há prompt fixo no código: sem o arquivo, o modelo fica sem instruções.
     """
-    if not memoria:
-        log.warning("sem CONTEXTO.md: a sessão começa sem instruções de sistema")
+    try:
+        return Path(caminho).read_text(encoding="utf-8", errors="replace").strip()
+    except OSError:
+        log.warning("instruções não encontradas em %s: sessão sem instruções de sistema", caminho)
         return ""
-    return memoria
+
+
+def instrucao_sistema(instrucoes: str, memoria: str | None) -> str:
+    """Instrução de sistema = INSTRUCTIONS.md + últimas trocas (memória), se houver."""
+    return "\n\n".join(p for p in (instrucoes, memoria) if p)
 
 
 class ColetorTranscricaoUsuario(FrameProcessor):
@@ -154,7 +161,7 @@ class SessaoPipecat:
     def criar_llm(self, memoria: str | None = None):
         """Cria o serviço speech-to-speech do provedor configurado (sem abrir conexão)."""
         c = self._config
-        instrucao = instrucao_sistema(memoria)
+        instrucao = instrucao_sistema(carregar_instrucoes(c.instrucoes_arquivo), memoria)
         ferramentas = self.ferramentas()
         if c.provedor_voz == "gemini":
             from google.genai.types import ProactivityConfig

@@ -19,7 +19,7 @@ O protocolo com a placa está em [`../docs/contrato.md`](../docs/contrato.md).
 | `voz/tts_gemini.py` | TTS do Gemini para falar os resultados |
 | `voz/tarefas.py` | Execução do Claude Code (`claude -p`) e fila de tarefas |
 | `voz/detector_fala.py` | Detecção local de início e fim de fala (com passa-altas de 80 Hz contra o ronco do mic) |
-| `voz/memoria.py` | Memória: `CONTEXTO.md` + `historico.jsonl` (rotação de 10 MB, até 7 arquivos) |
+| `voz/memoria.py` | Memória: `historico.jsonl` (rotação de 10 MB, até 7 arquivos) |
 | `voz/config.py` | Configuração por variáveis de ambiente |
 | `scripts/teste_real.py` | Simula a placa a partir de um `.wav` (teste sem hardware) |
 | `spike/` | Experimentos descartáveis da integração com o Gemini |
@@ -40,17 +40,18 @@ Copie `.env.example` para `.env` e preencha. **Nunca commite o `.env`.**
 | `ESPERA_RESPOSTA_S` | Fecha a sessão se o modelo não responder depois que você parar de falar (padrão 6). |
 | `ESCUTA_MAX_S` | Trava de custo: tempo máximo ouvindo sem resposta do modelo (padrão 60). |
 | `WORKSPACE_DIR` | Pasta onde o Claude Code trabalha nos projetos. |
-| `MEMORIA_DIR` | Pasta da memória (`CONTEXTO.md` e `historico.jsonl`). Vazio = sem memória. |
+| `MEMORIA_DIR` | Pasta da memória (`historico.jsonl`). Vazio = sem memória. |
+| `INSTRUCOES_ARQUIVO` | Arquivo de instruções do assistente. Padrão: `servidor/INSTRUCTIONS.md` (no Docker, `/opt/voz/INSTRUCTIONS.md`). |
 | `CLAUDE_TIMEOUT_S` | Tempo máximo de uma tarefa do Claude Code (padrão 1800). |
 | `CLAUDE_CODE_OAUTH_TOKEN` | Login do Claude Code pela assinatura (gere com `claude setup-token`). |
 | `CLAUDE_CMD` | Comando do Claude Code (padrão `claude`). Em testes, aponte para um script falso. |
 | `GH_TOKEN` | Token do GitHub para o Claude Code clonar, criar branches e PRs. |
 
-## Memória (CONTEXTO.md e histórico)
+## Instruções e memória
 
 A instrução de sistema de toda conversa é montada assim (spec §7.2); não há prompt fixo no código:
 
-- **[`CONTEXTO.md`](CONTEXTO.md)**: **todas as instruções do assistente** (personalidade, idioma, prática de inglês, quando usar a ferramenta `tarefa_de_codigo` e a busca, seus projetos). Fica versionado no repositório: edite, faça commit e o próximo deploy o copia para `MEMORIA_DIR`, **substituindo** o anterior (o `iniciar.bat` faz o mesmo localmente). Como é lido no início de cada conversa, uma edição direta em `MEMORIA_DIR` vale na hora, mas se perde no próximo deploy.
+- **[`INSTRUCTIONS.md`](INSTRUCTIONS.md)**: **todas as instruções do assistente** (personalidade, idioma, prática de inglês, quando usar a ferramenta `tarefa_de_codigo` e a busca, seus projetos). Fica versionado no repositório e vai dentro da imagem Docker (`INSTRUCOES_ARQUIVO=/opt/voz/INSTRUCTIONS.md`), então **cada deploy carrega a versão nova**: edite, faça commit e push. Localmente é lido direto de `servidor/INSTRUCTIONS.md`, a cada conversa.
 - **As últimas 5 trocas** (pergunta → resposta, incluindo os resultados do Claude Code), tiradas das transcrições do Gemini e guardadas em `historico.jsonl`.
 
 Quando o arquivo chegaria a 10 MB, ele vira `historico.1.jsonl` (o anterior vira `.2`, e assim por diante), e um novo começa vazio. Ficam no máximo 7 arquivos.

@@ -4,14 +4,11 @@ set -e
 WORKSPACE_DIR="${WORKSPACE_DIR:-/home/voz/workspace}"
 mkdir -p "$WORKSPACE_DIR" "$HOME/.claude"
 
-# Memória (CONTEXTO.md + historico.jsonl): o CONTEXTO.md (instruções do assistente)
-# vem do repositório e é SEMPRE substituído pelo da imagem; o histórico é preservado.
+# Memória (historico.jsonl). As instruções (INSTRUCTIONS.md) vêm da própria imagem.
 if [ -n "${MEMORIA_DIR:-}" ]; then
   mkdir -p "$MEMORIA_DIR"
-  if [ -f /opt/voz/CONTEXTO.md ]; then
-    cp /opt/voz/CONTEXTO.md "$MEMORIA_DIR/CONTEXTO.md"
-    echo "memória: CONTEXTO.md atualizado em $MEMORIA_DIR" >&2
-  fi
+  # sobra da versão antiga, em que as instruções ficavam na pasta de memória
+  rm -f "$MEMORIA_DIR/CONTEXTO.md"
 fi
 
 # git autenticado pelo gh (clonar, criar branches, push) quando houver token

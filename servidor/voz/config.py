@@ -7,6 +7,7 @@ Os nomes de modelo aparecem aqui apenas como *default*; em produção vêm de
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Mapping
 
@@ -21,6 +22,10 @@ VOZ_PADRAO = {"gemini": "Charon", "openai": "marin"}
 MODELO_TTS_PADRAO = "gemini-3.8-flash-lite-tts"
 VOZ_TTS_PADRAO = "Charon"
 
+# servidor/INSTRUCTIONS.md (ao lado do pacote voz/); no Docker vem pela variável
+# INSTRUCOES_ARQUIVO=/opt/voz/INSTRUCTIONS.md, gravada na imagem a cada deploy.
+INSTRUCOES_PADRAO = str(Path(__file__).resolve().parents[1] / "INSTRUCTIONS.md")
+
 
 @dataclass(frozen=True)
 class Config:
@@ -34,7 +39,8 @@ class Config:
     espera_resposta_s: float = 6.0
     escuta_max_s: float = 60.0  # trava: tempo máximo ouvindo sem resposta do modelo
     workspace_dir: str = "/home/voz/workspace"
-    memoria_dir: str = ""  # CONTEXTO.md + historico.jsonl; vazio = sem memória
+    memoria_dir: str = ""  # historico.jsonl; vazio = sem memória
+    instrucoes_arquivo: str = INSTRUCOES_PADRAO  # instruções de sistema (INSTRUCTIONS.md)
     claude_timeout_s: float = 1800.0
     openai_api_key: str = ""
     voz_tts: str = VOZ_TTS_PADRAO
@@ -86,6 +92,7 @@ class Config:
             escuta_max_s=numero("ESCUTA_MAX_S", 60.0),
             workspace_dir=texto("WORKSPACE_DIR", "/home/voz/workspace"),
             memoria_dir=texto("MEMORIA_DIR", ""),
+            instrucoes_arquivo=texto("INSTRUCOES_ARQUIVO", INSTRUCOES_PADRAO),
             claude_timeout_s=numero("CLAUDE_TIMEOUT_S", 1800.0),
             openai_api_key=openai,
             voz_tts=texto("VOZ_TTS", voz if provedor == "gemini" else VOZ_TTS_PADRAO),

@@ -75,24 +75,19 @@ def test_cria_a_pasta_se_nao_existir(tmp_path):
 
 # ----------------------------------------------------------------- Memoria
 
-def test_memoria_inclui_contexto_md_e_trocas(tmp_path):
-    (tmp_path / "CONTEXTO.md").write_text("Meu nome é Rafael.", encoding="utf-8")
+def test_memoria_inclui_trocas(tmp_path):
     m = Memoria(tmp_path)
     m.registrar_conversa("quanto é 2+2?", "Quatro.")
     m.registrar_tarefa("ajuste a página de pedidos", "Pronto, abri o PR 42.")
     texto = m.texto_para_sessao()
-    assert "Meu nome é Rafael." in texto
     assert "quanto é 2+2?" in texto and "Quatro." in texto
     assert "ajuste a página de pedidos" in texto and "PR 42" in texto
     assert "referência" in texto.lower()
 
 
-def test_memoria_le_contexto_md_a_cada_sessao(tmp_path):
-    m = Memoria(tmp_path)
-    (tmp_path / "CONTEXTO.md").write_text("versão 1", encoding="utf-8")
-    assert "versão 1" in m.texto_para_sessao()
-    (tmp_path / "CONTEXTO.md").write_text("versão 2", encoding="utf-8")
-    assert "versão 2" in m.texto_para_sessao()
+def test_memoria_ignora_instrucoes_na_pasta(tmp_path):
+    (tmp_path / "CONTEXTO.md").write_text("sobra antiga", encoding="utf-8")
+    assert Memoria(tmp_path).texto_para_sessao() is None
 
 
 def test_memoria_vazia_devolve_none(tmp_path):

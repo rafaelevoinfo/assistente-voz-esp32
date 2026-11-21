@@ -1,5 +1,4 @@
-"""Memória do assistente: ``CONTEXTO.md`` (todas as instruções de sistema; vem do repositório
-e é substituído a cada deploy) e histórico de trocas.
+"""Memória do assistente: histórico de trocas (as instruções ficam em INSTRUCTIONS.md).
 
 O histórico fica em ``historico.jsonl`` (uma troca por linha). Quando o arquivo
 passaria de ``max_bytes`` ele é rotacionado: o atual vira ``historico.1.jsonl``, o
@@ -20,7 +19,6 @@ log = logging.getLogger(__name__)
 MAX_BYTES_PADRAO = 10 * 1024 * 1024  # 10 MB
 MAX_ARQUIVOS_PADRAO = 7
 TROCAS_NA_SESSAO = 5
-LIMITE_CONTEXTO_MD = 8000  # caracteres; evita uma instrução de sistema gigante
 
 
 @dataclass(frozen=True)
@@ -95,7 +93,7 @@ class Historico:
 
 
 class Memoria:
-    """Junta o ``CONTEXTO.md`` e as últimas trocas num texto para a instrução de sistema."""
+    """Junta as últimas trocas num texto que vai ao fim da instrução de sistema."""
 
     def __init__(self, pasta: Path | str, historico: Historico | None = None):
         self.pasta = Path(pasta)
@@ -108,17 +106,8 @@ class Memoria:
     def registrar_tarefa(self, pedido: str, resultado: str) -> None:
         self.historico.registrar(pedido, resultado, origem="claude_code")
 
-    def _contexto_md(self) -> str:
-        caminho = self.pasta / "CONTEXTO.md"
-        if not caminho.exists():
-            return ""
-        return caminho.read_text(encoding="utf-8", errors="replace").strip()[:LIMITE_CONTEXTO_MD]
-
     def texto_para_sessao(self) -> str | None:
         partes: list[str] = []
-        contexto = self._contexto_md()
-        if contexto:
-            partes.append(contexto)  # o CONTEXTO.md já é a instrução de sistema completa
         trocas = self.historico.ultimas(TROCAS_NA_SESSAO)
         if trocas:
             linhas = ["## Conversas anteriores (apenas referência; não retome esses assuntos "
