@@ -51,7 +51,7 @@ Copie `.env.example` para `.env` e preencha. **Nunca commite o `.env`.**
 
 A instrução de sistema de toda conversa é montada assim (spec §7.2); não há prompt fixo no código:
 
-- **[`INSTRUCTIONS.md`](INSTRUCTIONS.md)**: **todas as instruções do assistente** (personalidade, idioma, prática de inglês, quando usar a ferramenta `tarefa_de_codigo` e a busca, seus projetos). Fica versionado no repositório e vai dentro da imagem Docker (`INSTRUCOES_ARQUIVO=/opt/voz/INSTRUCTIONS.md`), então **cada deploy carrega a versão nova**: edite, faça commit e push. Localmente é lido direto de `servidor/INSTRUCTIONS.md`, a cada conversa.
+- **[`INSTRUCTIONS.md`](INSTRUCTIONS.md)**: **todas as instruções do assistente** (personalidade, idioma, prática de inglês, quando usar a ferramenta `tarefa_de_codigo` e a busca, seus projetos). Fica versionado no repositório e vai dentro da imagem Docker (`INSTRUCOES_ARQUIVO=/opt/voz/INSTRUCTIONS.md`), então **cada deploy carrega a versão nova**: edite, faça commit e push (o Dokploy faz o deploy sozinho). Localmente é lido direto de `servidor/INSTRUCTIONS.md`, a cada conversa.
 - **As últimas 5 trocas** (pergunta → resposta, incluindo os resultados do Claude Code), tiradas das transcrições do Gemini e guardadas em `historico.jsonl`.
 
 Quando o arquivo chegaria a 10 MB, ele vira `historico.1.jsonl` (o anterior vira `.2`, e assim por diante), e um novo começa vazio. Ficam no máximo 7 arquivos.
