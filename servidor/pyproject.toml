@@ -7,17 +7,19 @@ name = "voz"
 version = "0.1.0"
 description = "Servidor do assistente de voz Hi ESP (placa ESP32-S3 <-> Gemini Live <-> Claude Code)"
 requires-python = ">=3.12"
+# Versões travadas (as testadas). requirements.txt trava também as dependências
+# indiretas para o Docker; para atualizar, veja o README.
 dependencies = [
-    "fastapi",
-    "uvicorn[standard]",
-    "pipecat-ai[google]",
-    "google-genai",
-    "numpy",
-    "websockets",
+    "fastapi==0.163.2",
+    "uvicorn[standard]==0.54.0",
+    "pipecat-ai[google]==1.16.0",
+    "google-genai==3.4.0",
+    "numpy==2.5.5",
+    "websockets==17.4",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-asyncio", "httpx"]
+dev = ["pytest==9.2.0", "pytest-asyncio==1.5.0", "httpx==0.28.1", "uv==0.13.9"]
 
 [tool.setuptools]
 packages = ["voz"]

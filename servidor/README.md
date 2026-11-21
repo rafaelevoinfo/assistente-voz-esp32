@@ -66,6 +66,22 @@ python -m venv .venv
 .venv/Scripts/pip install -e ".[dev]"     # Linux/macOS: .venv/bin/pip
 ```
 
+### Versões das dependências
+
+As versões são travadas em dois lugares:
+
+- `pyproject.toml`: as dependências diretas, com `==`.
+- `requirements.txt`: **todas** as dependências, incluindo as indiretas, resolvidas para o Linux do Docker. O Dockerfile instala por ele.
+
+Para atualizar: mude as versões no `pyproject.toml`, reinstale (`pip install -e ".[dev]"`), rode os testes e regenere o lock:
+
+```bash
+.venv/Scripts/pip freeze --exclude-editable > /tmp/c.txt
+.venv/Scripts/uv pip compile pyproject.toml --python-version 3.12 \
+  --python-platform x86_64-unknown-linux-gnu -c /tmp/c.txt \
+  --no-header --no-annotate -o requirements.txt
+```
+
 Suba o servidor escutando na rede (para a placa alcançar o notebook):
 
 ```bash

@@ -24,11 +24,14 @@ RUN npm install -g @anthropic-ai/claude-code && npm cache clean --force
 
 RUN useradd -m -s /bin/bash voz
 
-# Pacote do servidor (dependências primeiro, para aproveitar o cache)
+# Dependências com versões travadas (requirements.txt) e depois o pacote do servidor,
+# sem deixar o pip resolver de novo (--no-deps). Camadas separadas aproveitam o cache.
 WORKDIR /opt/voz
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 COPY pyproject.toml ./
 COPY voz ./voz
-RUN pip install .
+RUN pip install --no-deps .
 
 COPY --chmod=755 entrypoint.sh /entrypoint.sh
 # Instruções do assistente: ficam na imagem, então cada deploy traz a versão do repositório
