@@ -6,6 +6,7 @@ rem  Para parar: feche as janelas (ou Ctrl+C em cada uma).
 rem
 rem  Uso: de dois cliques neste arquivo, ou rode "iniciar.bat"
 rem       "iniciar.bat teste" so confere a configuracao.
+rem       "iniciar.bat player" abre SO o player (servidor na VPS).
 rem ============================================================
 
 rem ---- Ajustes ----------------------------------------------
@@ -22,6 +23,18 @@ set "RAIZ=%~dp0"
 set "SERVIDOR=%RAIZ%servidor"
 set "NOTEBOOK=%RAIZ%notebook"
 set "PYTHONIOENCODING=utf-8"
+
+if /i "%~1"=="player" (
+  if not exist "%NOTEBOOK%\.venv\Scripts\python.exe" (
+    echo [ERRO] Ambiente Python do player nao encontrado. Veja notebook\README.md.
+    pause
+    exit /b 1
+  )
+  echo Iniciando so o player ^(%PORTA%^) - o servidor e o da VPS...
+  start "Player (%PORTA%)" /D "%NOTEBOOK%" cmd /k ".venv\Scripts\python.exe player.py --porta %PORTA%"
+  echo Pronto. Diga "Hi ESP" perto da placa.
+  exit /b 0
+)
 
 if not exist "%SERVIDOR%\.env" (
   echo [ERRO] Nao encontrei "%SERVIDOR%\.env".

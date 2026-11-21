@@ -30,7 +30,7 @@ Mesa                                    VPS (Docker / Dokploy)
 
 ## Rodando tudo localmente (desenvolvimento)
 
-O jeito mais fácil: **dê dois cliques em `iniciar.bat`**. Ele sobe o servidor e o player em duas janelas (veja os ajustes no topo do arquivo).
+O jeito mais fácil: **dê dois cliques em `iniciar.bat`**. Ele sobe o servidor e o player em duas janelas (veja os ajustes no topo do arquivo). Com o servidor rodando na VPS, use `iniciar.bat player` para abrir só o player.
 
 Ou, manualmente, nesta ordem:
 
