@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="920" viewBox="0 0 1300 920" font-family="Segoe UI, Arial, sans-serif">
+<rect width="1300" height="920" fill="#ffffff"/>
+<text x="40" y="46" font-size="26" fill="#111827" font-weight="700" text-anchor="start">Capacitor do amplificador: em paralelo entre VIN e GND</text>
+<text x="40" y="74" font-size="15" fill="#4b5563" font-weight="400" text-anchor="start">Ele fica "pendurado" entre os dois fios de alimentação, como uma caixa d'água: guarda energia e entrega nos picos de volume.</text>
+<text x="40" y="125" font-size="19" fill="#1d4ed8" font-weight="700" text-anchor="start">1. Reconheça as pernas</text>
+<rect x="150" y="175" width="80" height="130" rx="14" fill="#1e3a8a"/>
+<rect x="202" y="175" width="28" height="130" rx="0" fill="#cbd5e1"/>
+<rect x="202" y="175" width="28" height="130" rx="14" fill="#cbd5e1"/>
+<text x="216" y="205" font-size="22" fill="#1e3a8a" font-weight="700" text-anchor="middle">−</text>
+<text x="216" y="233" font-size="22" fill="#1e3a8a" font-weight="700" text-anchor="middle">−</text>
+<text x="216" y="261" font-size="22" fill="#1e3a8a" font-weight="700" text-anchor="middle">−</text>
+<text x="216" y="289" font-size="22" fill="#1e3a8a" font-weight="700" text-anchor="middle">−</text>
+<text x="170" y="247" font-size="12" fill="#e0e7ff" font-weight="600" text-anchor="middle">1000</text>
+<text x="170" y="263" font-size="12" fill="#e0e7ff" font-weight="600" text-anchor="middle">µF</text>
+<rect x="168" y="305" width="5" height="120" fill="#9ca3af"/>
+<rect x="210" y="305" width="5" height="85" fill="#9ca3af"/>
+<text x="170" y="447" font-size="24" fill="#dc2626" font-weight="700" text-anchor="middle">+</text>
+<text x="212" y="412" font-size="24" fill="#111827" font-weight="700" text-anchor="middle">−</text>
+<text x="260" y="215" font-size="14" fill="#111827" font-weight="600" text-anchor="start">← faixa clara com sinais "−"</text>
+<text x="260" y="235" font-size="14" fill="#111827" font-weight="400" text-anchor="start">   = lado NEGATIVO</text>
+<text x="260" y="375" font-size="14" fill="#111827" font-weight="600" text-anchor="start">← perna curta (embaixo da faixa) = −  → vai no GND</text>
+<text x="260" y="425" font-size="14" fill="#dc2626" font-weight="600" text-anchor="start">← perna longa = +  → vai no VIN (5V)</text>
+<text x="40" y="485" font-size="13" fill="#b91c1c" font-weight="600" text-anchor="start">⚠ Eletrolítico tem polaridade: invertido ele esquenta e pode estufar. A tensão escrita nele deve ser ≥ 10 V.</text>
+<text x="720" y="125" font-size="19" fill="#1d4ed8" font-weight="700" text-anchor="start">2. A ideia (esquema)</text>
+<line x1="740" y1="190" x2="1220" y2="190" stroke="#dc2626" stroke-width="6"/>
+<line x1="740" y1="350" x2="1220" y2="350" stroke="#111827" stroke-width="6"/>
+<text x="740" y="178" font-size="14" fill="#dc2626" font-weight="700" text-anchor="start">ESP32  5Vin</text>
+<text x="740" y="376" font-size="14" fill="#111827" font-weight="700" text-anchor="start">ESP32  GND</text>
+<rect x="1120" y="160" width="110" height="220" rx="10" fill="#7c3aed"/>
+<text x="1175" y="270" font-size="15" fill="#fff" font-weight="700" text-anchor="middle">MAX</text>
+<text x="1175" y="288" font-size="15" fill="#fff" font-weight="700" text-anchor="middle">98357A</text>
+<text x="1132" y="208" font-size="13" fill="#fff" font-weight="700" text-anchor="start">VIN</text>
+<text x="1132" y="342" font-size="13" fill="#fff" font-weight="700" text-anchor="start">GND</text>
+<line x1="990" y1="190" x2="990" y2="255" stroke="#6b7280" stroke-width="4"/>
+<line x1="990" y1="285" x2="990" y2="350" stroke="#6b7280" stroke-width="4"/>
+<line x1="964" y1="255" x2="1016" y2="255" stroke="#111827" stroke-width="5"/>
+<path d="M964,292 Q990,276 1016,292" fill="none" stroke="#111827" stroke-width="5"/>
+<text x="1024" y="252" font-size="18" fill="#dc2626" font-weight="700" text-anchor="start">+</text>
+<text x="1024" y="300" font-size="18" fill="#111827" font-weight="700" text-anchor="start">−</text>
+<circle cx="990" cy="190" r="7" fill="#dc2626"/>
+<circle cx="990" cy="350" r="7" fill="#111827"/>
+<text x="950" y="270" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="end">C</text>
+<text x="800" y="420" font-size="14" fill="#111827" font-weight="400" text-anchor="start">Os fios continuam indo direto ao módulo; o capacitor só é</text>
+<text x="800" y="440" font-size="14" fill="#111827" font-weight="400" text-anchor="start">uma "ponte" a mais entre os dois, perto do módulo.</text>
+<text x="40" y="520" font-size="19" fill="#1d4ed8" font-weight="700" text-anchor="start">3. Na protoboard (vista de cima)</text>
+<rect x="60" y="550" width="1180" height="300" rx="10" fill="#f5f5f4" stroke="#a8a29e" stroke-width="2"/>
+<rect x="96" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="96" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="96" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="96" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="96" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="128" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="128" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="128" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="128" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="128" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="160" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="160" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="160" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="160" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="160" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="192" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="192" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="192" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="192" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="192" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="224" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="224" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="224" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="224" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="224" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="256" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="256" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="256" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="256" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="256" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="288" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="288" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="288" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="288" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="288" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="320" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="320" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="320" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="320" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="320" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="352" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="352" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="352" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="352" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="352" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="384" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="384" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="384" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="384" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="384" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="416" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="416" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="416" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="416" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="416" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="448" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="448" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="448" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="448" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="448" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="480" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="480" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="480" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="480" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="480" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="512" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="512" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="512" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="512" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="512" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="544" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="544" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="544" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="544" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="544" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="576" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="576" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="576" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="576" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="576" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="608" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="608" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="608" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="608" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="608" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="640" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="640" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="640" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="640" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="640" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="672" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="672" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="672" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="672" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="672" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="704" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="704" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="704" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="704" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="704" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="736" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="736" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="736" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="736" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="736" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="768" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="768" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="768" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="768" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="768" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="800" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="800" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="800" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="800" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="800" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="832" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="832" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="832" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="832" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="832" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="864" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="864" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="864" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="864" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="864" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="896" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="896" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="896" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="896" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="896" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="928" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="928" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="928" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="928" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="928" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="960" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="960" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="960" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="960" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="960" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="992" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="992" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="992" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="992" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="992" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1024" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1024" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1024" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1024" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1024" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1056" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1056" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1056" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1056" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1056" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1088" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1088" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1088" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1088" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1088" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1120" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1120" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1120" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1120" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1120" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1152" y="606" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1152" y="632" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1152" y="658" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1152" y="684" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<rect x="1152" y="710" width="8" height="8" rx="1" fill="#d6d3d1"/>
+<text x="74" y="615" font-size="11" fill="#78716c" font-weight="400" text-anchor="start">a</text>
+<text x="74" y="719" font-size="11" fill="#78716c" font-weight="400" text-anchor="start">e</text>
+<text x="1230" y="580" font-size="12" fill="#78716c" font-weight="400" text-anchor="end">cada coluna de 5 furos é ligada por dentro (a até e)</text>
+<rect x="654" y="554" width="236" height="50" rx="6" fill="#7c3aed" opacity="0.92"/>
+<text x="772.0" y="576" font-size="13" fill="#fff" font-weight="700" text-anchor="middle">MAX98357A (pinos na fileira a)</text>
+<circle cx="676" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="676" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">LRC</text>
+<circle cx="708" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="708" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">BCLK</text>
+<circle cx="740" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="740" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">DIN</text>
+<circle cx="772" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="772" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">GAIN</text>
+<circle cx="804" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="804" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">SD</text>
+<circle cx="836" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="836" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">GND</text>
+<circle cx="868" cy="610" r="7" fill="#fbbf24" stroke="#111827" stroke-width="2"/>
+<text x="868" y="598" font-size="10" fill="#fff" font-weight="700" text-anchor="middle">VIN</text>
+<rect x="824" y="598" width="24" height="128" rx="6" fill="none" stroke="#111827" stroke-width="2.5" stroke-dasharray="5 3"/>
+<rect x="856" y="598" width="24" height="128" rx="6" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5 3"/>
+<circle cx="852.0" cy="662" r="30" fill="#1e3a8a" stroke="#0f172a" stroke-width="2"/>
+<path d="M852.0,632 A30,30 0 0 0 852.0,692 Z" fill="#cbd5e1"/>
+<text x="838.0" y="668" font-size="18" fill="#1e3a8a" font-weight="700" text-anchor="middle">−</text>
+<text x="866.0" y="668" font-size="18" fill="#fff" font-weight="700" text-anchor="middle">+</text>
+<circle cx="836" cy="662" r="4" fill="#111827"/>
+<circle cx="868" cy="662" r="4" fill="#fecaca"/>
+<text x="798" y="654" font-size="13" fill="#111827" font-weight="700" text-anchor="end">perna − (lado da faixa)</text>
+<text x="798" y="672" font-size="13" fill="#111827" font-weight="400" text-anchor="end">na coluna do GND</text>
+<text x="906" y="654" font-size="13" fill="#dc2626" font-weight="700" text-anchor="start">perna + na</text>
+<text x="906" y="672" font-size="13" fill="#dc2626" font-weight="400" text-anchor="start">coluna do VIN</text>
+<text x="906" y="692" font-size="12" fill="#1e3a8a" font-weight="600" text-anchor="start">(capacitor em pé, visto de cima)</text>
+<circle cx="836" cy="714" r="6" fill="#111827"/>
+<circle cx="868" cy="714" r="6" fill="#dc2626"/>
+<path d="M836,714 L836,880" fill="none" stroke="#111827" stroke-width="5"/>
+<path d="M868,714 L868,880" fill="none" stroke="#dc2626" stroke-width="5"/>
+<text x="826" y="872" font-size="13" fill="#111827" font-weight="700" text-anchor="end">fio do GND do ESP32</text>
+<text x="878" y="872" font-size="13" fill="#dc2626" font-weight="700" text-anchor="start">fio do 5Vin do ESP32</text>
+<text x="100" y="760" font-size="14" fill="#111827" font-weight="600" text-anchor="start">Como fica: na mesma coluna do pino GND do módulo</text>
+<text x="100" y="780" font-size="14" fill="#111827" font-weight="400" text-anchor="start">entram a perna − do capacitor e o fio de GND do ESP32.</text>
+<text x="100" y="800" font-size="14" fill="#111827" font-weight="400" text-anchor="start">Na coluna do VIN, a perna + e o fio do 5Vin.</text>
+</svg>
