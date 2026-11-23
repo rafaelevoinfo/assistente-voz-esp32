@@ -86,7 +86,7 @@
 #define POT_VOLUME_PINO 10
 #endif
 #define POT_INTERVALO_MS  50
-#define POT_HISTERESE     2    // % minima de mudanca (evita o volume "tremer")
+#define POT_HISTERESE     4    // % minima de mudanca (evita o volume "tremer")
 
 #define LED_RGB_PINO  48
 #define LED_BRILHO    25   // 0-255 (o WS2812 e muito forte; 25 ja e bem visivel)
@@ -238,7 +238,7 @@ static void lerPotenciometro() {
   ultimaLeitura = millis();
 
   int bruto = analogRead(POT_VOLUME_PINO);  // 0..4095
-  media = media < 0 ? bruto : media * 0.7f + bruto * 0.3f;  // suaviza o ruido do ADC
+  media = media < 0 ? bruto : media * 0.85f + bruto * 0.15f;  // suaviza o ruido do ADC
   int pct = (int)(media * 100.0f / 4095.0f + 0.5f);
   if (pct > 98) pct = 100;  // as pontas do curso nem sempre chegam a 0/4095
   if (pct < 2) pct = 0;
@@ -252,6 +252,23 @@ static void lerPotenciometro() {
     ultimoLog = millis();
   }
 #endif
+}
+
+// Motivo do ultimo reinicio (diagnostico de quedas de energia x travamentos).
+static const char *motivoReset() {
+  switch (esp_reset_reason()) {
+    case ESP_RST_POWERON:   return "ligou a energia (ou o USB reconectou)";
+    case ESP_RST_EXT:       return "pino de reset externo";
+    case ESP_RST_SW:        return "reinicio por software (ex.: apos gravar)";
+    case ESP_RST_PANIC:     return "TRAVAMENTO (panic/Guru Meditation)";
+    case ESP_RST_INT_WDT:   return "TRAVAMENTO (watchdog de interrupcao)";
+    case ESP_RST_TASK_WDT:  return "TRAVAMENTO (watchdog de task)";
+    case ESP_RST_WDT:       return "TRAVAMENTO (watchdog)";
+    case ESP_RST_BROWNOUT:  return "QUEDA DE TENSAO (brownout: a fonte nao aguentou)";
+    case ESP_RST_DEEPSLEEP: return "saiu do deep sleep";
+    case ESP_RST_USB:       return "reset pelo USB (ex.: RTS do upload)";
+    default:                return "desconhecido";
+  }
 }
 
 // ------------------------------------------------------------ reproducao
@@ -463,6 +480,7 @@ void setup() {
   notebookIniciar();
   delay(1500);
   logMsg("Assistente de voz fw %s iniciando", FW_VERSAO);
+  logMsg("motivo do ultimo reinicio: %s (codigo %d)", motivoReset(), (int)esp_reset_reason());
 
   filaMic = (int16_t (*)[MIC_AMOSTRAS_FRAME])ps_malloc(FILA_MIC_FRAMES * sizeof(frameMic));
   if (!filaMic) logMsg("AVISO: sem PSRAM para a fila do mic; o comeco da fala pode ser cortado");

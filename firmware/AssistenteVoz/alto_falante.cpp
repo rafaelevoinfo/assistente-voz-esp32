@@ -85,7 +85,7 @@ static void taskAltoFalante(void *) {
     if (novo) {
       enchendo = true;
       estAmostras = estFaltas = estRecusados = estPico = 0;
-      if (taxa != taxaAtual && spk.configureTX(taxa, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO)) {
+      if (taxa != taxaAtual && spk.configureTX(taxa, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO, I2S_STD_SLOT_BOTH)) {
         taxaAtual = taxa;
       }
     }
@@ -147,7 +147,9 @@ bool altoFalanteIniciar() {
   }
   memset(silencio, 0, sizeof(silencio));
   spk.setPins(AF_BCLK, AF_LRC, AF_DIN);
-  if (!spk.begin(I2S_MODE_STD, TAXA_PADRAO, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO)) {
+  // Mono nos DOIS canais (I2S_STD_SLOT_BOTH): com o SD solto o MAX98357A toca (L+R)/2;
+  // com o padrão (só o esquerdo) o direito ia em silêncio e o volume caía pela metade (-6 dB).
+  if (!spk.begin(I2S_MODE_STD, TAXA_PADRAO, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO, I2S_STD_SLOT_BOTH)) {
     logMsg("ERRO: falha ao iniciar o I2S do alto-falante");
     return false;
   }
