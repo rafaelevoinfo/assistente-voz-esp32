@@ -5,7 +5,7 @@ Firmware Arduino para **ESP32-S3 N16R8** (YD-ESP32-S3) com microfone **INMP441**
 - fica ouvindo a wake word **"Hi ESP"** localmente (ESP-SR / WakeNet9), sem enviar áudio antes dela;
 - mantém uma conexão **WebSocket** sempre aberta com o servidor de voz;
 - depois do "Hi ESP", envia o mic ao servidor (PCM 16 kHz). O áudio já é gravado numa fila desde a wake word, então o começo da fala não se perde;
-- repassa pela **USB serial** o áudio de resposta ao [player do notebook](../../notebook/README.md), até haver um alto-falante na placa.
+- toca o áudio das respostas no **alto-falante** (MAX98357A: LRC GPIO6, BCLK GPIO7, DIN GPIO9, VIN no 5Vin; ver [docs/amplificador.png](../../docs/amplificador.png)). O volume fica em `VOLUME_ALTO_FALANTE` (0-100, padrão 40) no `config.h`.
 
 O protocolo está em [`../../docs/contrato.md`](../../docs/contrato.md).
 
@@ -34,7 +34,7 @@ Diagrama gerado por [`docs/gerar_ligacoes.py`](../../docs/gerar_ligacoes.py) (li
 
 O LED RGB só funciona com o **jumper "RGB" da placa fechado** com solda. O brilho é ajustado em `LED_BRILHO`, no `.ino`. Os LEDs TX/RX não são mais usados.
 
-**Sinal sonoro de "estou ouvindo":** logo após o "Hi ESP" (junto com o LED RX acendendo), a placa manda `BEEP`. Na janela de continuação depois de uma resposta, só o LED acende, sem som ao notebook, que toca dois tons curtos. O mic descarta ~0,6 s de áudio logo depois, para o próprio bipe não ser enviado ao servidor como fala.
+**Sinal sonoro de "estou ouvindo":** logo após o "Hi ESP", a placa toca três notas curtas no alto-falante. Na janela de continuação depois de uma resposta, só o LED acende, sem som. O mic descarta ~0,45 s de áudio logo depois, para o próprio bipe não ser enviado ao servidor como fala.
 
 ## Configuração
 
@@ -75,7 +75,7 @@ arduino-cli upload -p COM4 --fqbn "$FQBN" .
 
 A IDE não grava os modelos de voz. Se eles nunca foram gravados na placa, use o arduino-cli uma vez.
 
-**Antes de gravar, feche o player do notebook e o Monitor Serial**, porque os dois ocupam a porta. Se o upload não conectar, segure **BOOT**, aperte **RST**, solte **BOOT** e tente de novo.
+**Antes de gravar, feche o leitor de logs (player) e o Monitor Serial**, porque os dois ocupam a porta. Se o upload não conectar, segure **BOOT**, aperte **RST**, solte **BOOT** e tente de novo.
 
 ## Problemas conhecidos
 

@@ -18,3 +18,10 @@
 
 // Ganho em software aplicado ao mic antes de enviar (com saturação em int16).
 #define GANHO_MIC      4
+
+// Volume do alto-falante em % (0-100), aplicado em software. Opcional (padrão 40).
+// #define VOLUME_ALTO_FALANTE 40
+
+// Potenciômetro de volume no GPIO10 (pontas no 3V3 e GND, meio no GPIO10).
+// Use -1 se não houver potenciômetro (aí vale o VOLUME_ALTO_FALANTE).
+// #define POT_VOLUME_PINO 10

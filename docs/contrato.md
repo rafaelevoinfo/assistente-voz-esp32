@@ -94,8 +94,8 @@ Regras:
 
 ### 1.6 `playback_done` e timeouts de segurança
 
-- A placa envia `playback_done` quando recebe `DONE` do notebook (§2).
-- **Timeout na placa:** se o `DONE` não chegar em `duração_do_áudio + 3 s`, a placa envia `playback_done` assim mesmo. A duração vem de `bytes_recebidos / 48000` segundos, e o relógio começa no `audio_end`. Isso cobre o notebook desligado ou o player fechado.
+- A placa envia `playback_done` quando o último pedaço do áudio terminou de sair no alto-falante (MAX98357A, desde o fw 2.0; antes era o `DONE` do notebook).
+- **Timeout na placa:** se o som não terminar em `duração_do_áudio + 3 s`, a placa envia `playback_done` assim mesmo. A duração vem de `bytes_recebidos / 48000` segundos, e o relógio começa no `audio_end`.
 - **Timeout no servidor:** se o `playback_done` não chegar em `duração_do_áudio + 6 s` após o `audio_end`, o servidor age como se tivesse chegado.
 
 ### 1.7 Sequências de referência
@@ -140,34 +140,15 @@ serv  → listen … session_end
 
 ---
 
-## 2. Serial placa ⇄ notebook (USB, temporário até o MAX98357A)
+## 2. Serial placa → notebook (USB, só logs)
 
 | Item | Valor |
 |---|---|
 | Porta | USB nativa do ESP32-S3 (USB CDC). Hoje é a COM4 no notebook. |
-| Baud | 921600 (no USB CDC o valor é nominal, mas os dois lados usam o mesmo) |
+| Baud | 921600 (no USB CDC o valor é nominal) |
 
-### 2.1 Placa → notebook
-
-Linhas de texto terminadas em `\n`, e blocos binários anunciados por uma linha:
-
-| Linha | Seguido de | Significado |
-|---|---|---|
-| `LOG <texto>` | — | Log para exibir. **Todo** log da placa usa esse prefixo. |
-| `BEGIN <rate>` | — | Vai começar um áudio (rate = 24000). |
-| `AUD <n>` | exatamente `n` bytes de PCM 16 bits LE mono | Um pedaço de áudio. `n` é par e ≤ 4800. Os bytes podem conter `\n`. |
-| `END` | — | Fim do áudio. |
-| `BEEP` | — | Tocar o **sinal de "estou ouvindo"** (gerado no notebook, não é áudio do servidor). Não gera `DONE`. Enviado só ao detectar "Hi ESP". A janela de continuação após uma resposta não toca o sinal (só acende o LED). |
-
-Exemplo (bytes): `BEGIN 24000\nAUD 4800\n<4800 bytes>AUD 1200\n<1200 bytes>END\n`
-
-### 2.2 Notebook → placa
-
-| Linha | Quando |
-|---|---|
-| `DONE\n` | Depois de um `END`, quando **todo** o áudio recebido até ele terminou de tocar no alto-falante. |
-
-A placa ignora qualquer outra linha vinda do notebook.
+A placa só envia linhas `LOG <texto>
+`, para exibir. Desde o fw 2.0 o áudio das respostas e o sinal de "estou ouvindo" (3 notas, só ao detectar "Hi ESP") saem no alto-falante da própria placa. As linhas `BEGIN`/`AUD`/`END`/`BEEP` e o `DONE` do notebook, usados enquanto não havia alto-falante, foram removidos.
 
 ---
 

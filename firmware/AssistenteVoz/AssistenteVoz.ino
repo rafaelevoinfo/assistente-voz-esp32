@@ -38,10 +38,15 @@
 //    azul     = ouvindo (AGUARDANDO_LISTEN ou ENVIANDO_MIC)
 //  Os LEDs TX/RX (GPIO43/44) nao sao mais usados.
 //
-//  SINAL "ESTOU OUVINDO": ao detectar "Hi ESP" (junto com o LED RX acendendo),
-//    a placa manda BEEP ao notebook, que gera o som. A janela de continuacao
-//    apos uma resposta so acende o LED, sem som. Por BEEP_MUDO_MS o mic e descartado para o proprio bipe nao
-//    chegar ao servidor como se fosse fala.
+//  SOM (fw 2.0): o audio das respostas sai no alto-falante da propria placa
+//    (MAX98357A no segundo I2S, ver alto_falante.h). O playback_done e enviado
+//    quando o ultimo pedaco do audio sai no alto-falante. A Serial ficou so
+//    para os LOGs.
+//
+//  SINAL "ESTOU OUVINDO": ao detectar "Hi ESP" a placa toca um bipe curto
+//    (3 notas) no alto-falante. A janela de continuacao apos uma resposta so
+//    acende o LED, sem som. Por BEEP_MUDO_MS o mic e descartado para o proprio
+//    bipe nao chegar ao servidor como se fosse fala.
 //
 //  TAMANHO: ESP-SR + Wi-Fi + TLS da ~3,2 MB e NAO cabe no app de 3 MB da
 //    "ESP SR 16M". O partitions.csv desta pasta (prioridade sobre o esquema
@@ -69,10 +74,19 @@
 #error "Copie config.example.h para config.h e preencha."
 #endif
 
+#include "alto_falante.h"
 #include "audio.h"
 #include "notebook.h"
 
-#define FW_VERSAO "1.1"
+#define FW_VERSAO "2.0"
+
+// Potenciometro de volume (10 kΩ): pontas no 3V3 e no GND, pino do meio no
+// GPIO10 (ADC1, que funciona junto com o Wi-Fi). -1 no config.h = sem potenciometro.
+#ifndef POT_VOLUME_PINO
+#define POT_VOLUME_PINO 10
+#endif
+#define POT_INTERVALO_MS  50
+#define POT_HISTERESE     2    // % minima de mudanca (evita o volume "tremer")
 
 #define LED_RGB_PINO  48
 #define LED_BRILHO    25   // 0-255 (o WS2812 e muito forte; 25 ja e bem visivel)
@@ -100,15 +114,15 @@ static uint32_t estadoDesde = 0;
 // Reproducao (contrato §1.6)
 static bool recebendoAudio = false;      // entre audio_start e audio_end
 static int taxaAudio = 24000;
-static int endsPendentes = 0;            // END enviados ao notebook sem DONE
-static uint32_t bytesPendentes = 0;      // audio ainda nao confirmado por playback_done
-static uint32_t prazoPlayback = 0;       // millis() limite para o DONE
+static bool tocandoFim = false;          // audio_end recebido; esperando o som acabar
+static uint32_t bytesPendentes = 0;      // audio da resposta atual
+static uint32_t prazoPlayback = 0;       // millis() limite de seguranca para o playback_done
 static bool listenAdiado = false;
 
 static int16_t frameMic[MIC_AMOSTRAS_FRAME];
 
-// Bipe ~310 ms + latencia do player (~180 ms) + folga
-#define BEEP_MUDO_MS 600
+// Bipe ~310 ms + DMA do I2S (60 ms) + folga
+#define BEEP_MUDO_MS 450
 static uint32_t micMudoAte = 0;
 
 static bool ouvindo(Estado e) { return e == AGUARDANDO_LISTEN || e == ENVIANDO_MIC; }
@@ -169,7 +183,7 @@ static void mudarEstado(Estado novo) {
   // Sinal sonoro so depois do "Hi ESP" (a janela de continuacao apos uma
   // resposta acende o LED, mas sem som: o usuario achou irritante).
   if (novo == AGUARDANDO_LISTEN && !ouvindo(anterior)) {
-    notebookBeep();
+    altoFalanteBeep();
     micMudoAte = millis() + BEEP_MUDO_MS;
   }
   // A fila so sobrevive a passagem AGUARDANDO_LISTEN -> ENVIANDO_MIC.
@@ -181,7 +195,7 @@ static void mudarEstado(Estado novo) {
   }
 }
 
-static bool tocando() { return recebendoAudio || endsPendentes > 0; }
+static bool tocando() { return recebendoAudio || tocandoFim; }
 
 static void enviarTipo(const char *tipo) {
   char msg[48];
@@ -213,11 +227,38 @@ static bool jsonCampo(const char *json, const char *campo, char *saida, size_t t
   return n > 0;
 }
 
+// ---------------------------------------------------------- potenciometro
+
+static void lerPotenciometro() {
+#if POT_VOLUME_PINO >= 0
+  static uint32_t ultimaLeitura = 0, ultimoLog = 0;
+  static float media = -1;
+  static int pctAplicado = -100, pctLogado = -100;
+  if (millis() - ultimaLeitura < POT_INTERVALO_MS) return;
+  ultimaLeitura = millis();
+
+  int bruto = analogRead(POT_VOLUME_PINO);  // 0..4095
+  media = media < 0 ? bruto : media * 0.7f + bruto * 0.3f;  // suaviza o ruido do ADC
+  int pct = (int)(media * 100.0f / 4095.0f + 0.5f);
+  if (pct > 98) pct = 100;  // as pontas do curso nem sempre chegam a 0/4095
+  if (pct < 2) pct = 0;
+  if (abs(pct - pctAplicado) < POT_HISTERESE && pct != 0 && pct != 100) return;
+  if (pct == pctAplicado) return;
+  pctAplicado = pct;
+  altoFalanteVolume(pct);
+  if (pct != pctLogado && millis() - ultimoLog > 300) {
+    logMsg("volume: %d%%", pct);
+    pctLogado = pct;
+    ultimoLog = millis();
+  }
+#endif
+}
+
 // ------------------------------------------------------------ reproducao
 
 static void enviarPlaybackDone(const char *motivo) {
   logMsg("reproducao concluida (%s)", motivo);
-  endsPendentes = 0;
+  tocandoFim = false;
   bytesPendentes = 0;
   enviarTipo("playback_done");
   if (listenAdiado) {
@@ -228,9 +269,9 @@ static void enviarPlaybackDone(const char *motivo) {
 }
 
 static void abortarReproducao() {
-  if (recebendoAudio) notebookEnd();  // o player nao fica esperando
+  altoFalanteAbortar();
   recebendoAudio = false;
-  endsPendentes = 0;
+  tocandoFim = false;
   bytesPendentes = 0;
   listenAdiado = false;
 }
@@ -267,7 +308,8 @@ static void aoTexto(const char *json) {
       mudarEstado(SILENCIO);
     }
     recebendoAudio = true;
-    notebookBegin(taxaAudio);
+    bytesPendentes = 0;
+    altoFalanteComecar(taxaAudio);
     logMsg("memoria: heap interno livre %u (min %u), pilha do loop livre %u",
            (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
            (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL),
@@ -278,11 +320,13 @@ static void aoTexto(const char *json) {
       return;
     }
     recebendoAudio = false;
-    notebookEnd();
-    endsPendentes++;
+    altoFalanteFim();
+    tocandoFim = true;
+    // Prazo de seguranca: o audio inteiro ja pode estar no buffer, entao nunca
+    // demora mais que a sua duracao (+ folga) para terminar de tocar.
     uint32_t duracaoMs = (uint32_t)((uint64_t)bytesPendentes * 1000 / (taxaAudio * 2));
     prazoPlayback = millis() + duracaoMs + PLAYBACK_FOLGA_MS;
-    logMsg("audio de %u ms; aguardando DONE do notebook", (unsigned)duracaoMs);
+    logMsg("audio de %u ms recebido; tocando", (unsigned)duracaoMs);
   } else {
     logMsg("tipo desconhecido ignorado: %s", tipo);
   }
@@ -293,7 +337,7 @@ static void aoBinario(const uint8_t *dados, size_t n) {
     logMsg("audio fora de audio_start/audio_end ignorado (%u bytes)", (unsigned)n);
     return;
   }
-  notebookAudio(dados, n);
+  altoFalanteAudio(dados, n);
   bytesPendentes += n;
 }
 
@@ -423,6 +467,12 @@ void setup() {
   filaMic = (int16_t (*)[MIC_AMOSTRAS_FRAME])ps_malloc(FILA_MIC_FRAMES * sizeof(frameMic));
   if (!filaMic) logMsg("AVISO: sem PSRAM para a fila do mic; o comeco da fala pode ser cortado");
 
+  if (altoFalanteIniciar()) {
+    altoFalanteBeep();  // teste: o bipe ao ligar confirma que o alto-falante funciona
+  } else {
+    logMsg("AVISO: sem alto-falante; as respostas nao vao tocar");
+  }
+
   if (!audioIniciar()) {
     while (true) {
       logMsg("ERRO fatal no audio; reinicie a placa");
@@ -449,6 +499,7 @@ void loop() {
 
   ws.loop();
   audioManutencao();
+  lerPotenciometro();
 
   // Wake word
   if (audioPegarWake()) {
@@ -470,16 +521,16 @@ void loop() {
     mudarEstado(ESPERANDO_WAKE);
   }
 
-  // Notebook -> placa
-  int dones = notebookLerDones();
-  while (dones-- > 0) {
-    if (endsPendentes > 0) {
-      endsPendentes--;
-      if (endsPendentes == 0 && !recebendoAudio && conectado) enviarPlaybackDone("DONE do notebook");
-    }
+  // Fim do som da resposta -> playback_done
+  if (altoFalanteTerminou() && tocandoFim && !recebendoAudio) {
+    char resumo[160];
+    altoFalanteResumo(resumo, sizeof(resumo));
+    logMsg("alto-falante: %s", resumo);
+    if (conectado) enviarPlaybackDone("alto-falante");
   }
-  if (endsPendentes > 0 && !recebendoAudio && (int32_t)(millis() - prazoPlayback) >= 0) {
-    logMsg("DONE nao chegou a tempo (notebook desligado?)");
+  if (tocandoFim && !recebendoAudio && (int32_t)(millis() - prazoPlayback) >= 0) {
+    logMsg("o alto-falante nao terminou a tempo; seguindo assim mesmo");
+    altoFalanteAbortar();
     if (conectado) enviarPlaybackDone("timeout");
     else abortarReproducao();
   }
