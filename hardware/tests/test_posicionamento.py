@@ -111,3 +111,14 @@ def test_mic_longe_da_frente(placa):
     _, y_mic = mm(fp(placa, "U2").GetPosition().x), mm(fp(placa, "U2").GetPosition().y)
     _, y_amp = mm(fp(placa, "U3").GetPosition().x), mm(fp(placa, "U3").GetPosition().y)
     assert (frente - y_mic) > (frente - y_amp), "mic deve ficar mais para trás que o amplificador"
+
+
+def test_serigrafia_identifica_tudo(placa):
+    textos = " ".join(t.GetText() for t in placa.GetDrawings()
+                      if isinstance(t, pcbnew.PCB_TEXT) and t.GetLayer() == pcbnew.F_SilkS)
+    for rotulo in ("ESP32", "MIC", "AMP", "VOLUME", "12dB", "ALTO-FALANTE", "USB"):
+        assert rotulo in textos, rotulo
+    # contorno de cada módulo desenhado na serigrafia (onde ele encaixa)
+    contornos = [s for s in placa.GetDrawings()
+                 if isinstance(s, pcbnew.PCB_SHAPE) and s.GetLayer() == pcbnew.F_SilkS]
+    assert len(contornos) >= 4

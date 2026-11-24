@@ -78,6 +78,8 @@ def footprint_proprio(placa, ref, valor, pads):
     fp.SetFPIDAsString(netlist.COMPONENTES[ref][1])
     x0, y0 = pads[0][1], pads[0][2]
     fp.SetPosition(v(x0, y0))
+    fp.Reference().SetVisible(False)   # a serigrafia própria (serigrafia()) já identifica o módulo
+    fp.Value().SetVisible(False)
     placa.Add(fp)
     for numero, x, y in pads:
         pad_tht(fp, numero, x, y, quadrado=(numero == 1))
@@ -111,6 +113,77 @@ def area_antena(placa):
     for x, y in ((x0, y0), (x1, y0), (x1, y1), (x0, y1)):
         contorno.Append(pcbnew.FromMM(x), pcbnew.FromMM(y))
     placa.Add(z)
+
+
+def texto(placa, x, y, conteudo, altura=1.0, graus=0.0):
+    t = pcbnew.PCB_TEXT(placa)
+    t.SetText(conteudo)
+    t.SetLayer(pcbnew.F_SilkS)
+    t.SetPosition(v(x, y))
+    t.SetTextSize(v(altura, altura))
+    t.SetTextThickness(pcbnew.FromMM(0.15))
+    t.SetTextAngleDegrees(graus)
+    placa.Add(t)
+
+
+def linha(placa, x0, y0, x1, y1):
+    s = pcbnew.PCB_SHAPE(placa)
+    s.SetShape(pcbnew.SHAPE_T_SEGMENT)
+    s.SetStart(v(x0, y0))
+    s.SetEnd(v(x1, y1))
+    s.SetLayer(pcbnew.F_SilkS)
+    s.SetWidth(pcbnew.FromMM(0.15))
+    placa.Add(s)
+
+
+def retangulo(placa, x0, y0, x1, y1):
+    s = pcbnew.PCB_SHAPE(placa)
+    s.SetShape(pcbnew.SHAPE_T_RECT)
+    s.SetStart(v(x0, y0))
+    s.SetEnd(v(x1, y1))
+    s.SetLayer(pcbnew.F_SilkS)
+    s.SetWidth(pcbnew.FromMM(0.15))
+    placa.Add(s)
+
+
+def circulo(placa, cx, cy, raio):
+    s = pcbnew.PCB_SHAPE(placa)
+    s.SetShape(pcbnew.SHAPE_T_CIRCLE)
+    s.SetCenter(v(cx, cy))
+    s.SetEnd(v(cx + raio, cy))
+    s.SetLayer(pcbnew.F_SilkS)
+    s.SetWidth(pcbnew.FromMM(0.15))
+    placa.Add(s)
+
+
+def serigrafia(placa):
+    """Onde cada módulo encaixa e como usar o jumper de ganho (impresso na placa)."""
+    # contorno do ESP: 3 lados (o 4º cairia no entalhe da antena)
+    for (xa, ya), (xb, yb) in (((ESP_X, esp["comprimento"]), (ESP_X, 0.5)),
+                               ((ESP_X, 0.5), (ESP_X + esp["largura"], 0.5)),
+                               ((ESP_X + esp["largura"], 0.5), (ESP_X + esp["largura"], esp["comprimento"]))):
+        linha(placa, xa, ya, xb, yb)
+    texto(placa, ESP_X + esp["largura"] / 2, 30, "ESP32 (YD-ESP32-S3)", 1.2, 90)
+    texto(placa, ESP_X + esp["largura"] / 2, 2.2, "USB-C p/ tras", 1.0)
+    texto(placa, ESP_X + esp["largura"] / 2, ANTENA_Y0 - 3, "antena ->", 0.9)
+    raio_mic = M["mic"]["diametro"] / 2
+    circulo(placa, MIC_CENTRO[0], MIC_CENTRO[1], raio_mic)
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + 2, "MIC", 1.2)
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + 4, "furo p/ cima", 0.8)
+    amp_x1 = AMP_X0 + 6 * P
+    retangulo(placa, AMP_X0 - 2.2, AMP_PINOS_Y - 1.6, amp_x1 + 2.2, AMP_PINOS_Y + M["amp"]["comprimento"] - 1.6)
+    texto(placa, (AMP_X0 + amp_x1) / 2, AMP_PINOS_Y + 7, "AMP MAX98357A", 1.0)
+    texto(placa, (AMP_X0 + amp_x1) / 2, AMP_PINOS_Y + 14, "ALTO-FALANTE no borne", 0.8)
+    corpo = M["pot"]["corpo_diametro"]
+    retangulo(placa, POT_PINOS_X - 1.5, POT_Y - corpo / 2, W - 0.5, POT_Y + corpo / 2)
+    texto(placa, POT_PINOS_X - 4, POT_Y, "VOLUME", 1.0, 90)
+    texto(placa, 57.6, 49.0, "1", 0.8)
+    texto(placa, 57.6, 54.1, "3", 0.8)
+    texto(placa, 65.0, 47.5, "GANHO", 1.0)
+    texto(placa, 65.0, 49.5, "1-2: 12dB", 0.75)
+    texto(placa, 65.0, 50.9, "(recomendado)", 0.6)
+    texto(placa, 65.0, 52.5, "2-3: 15dB", 0.75)
+    texto(placa, 65.0, 54.0, "solto: 9dB", 0.75)
 
 
 def ligar_nets(placa):
@@ -160,6 +233,7 @@ def montar() -> pcbnew.BOARD:
     footprint_da_lib(placa, "R1", 53.0, 60.0)
 
     area_antena(placa)
+    serigrafia(placa)
     ligar_nets(placa)
     return placa
 
