@@ -9,3 +9,4 @@ docs/plans/
 memoria/
 .superpowers/
 hardware/ferramentas/
+*.kicad_prl
