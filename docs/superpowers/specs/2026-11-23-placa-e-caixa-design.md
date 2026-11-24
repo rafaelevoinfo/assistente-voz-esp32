@@ -1,6 +1,6 @@
 # Placa de circuito e caixa do assistente "Hi ESP" — design
 
-Data: 2026-11-23 · Status: aguardando aprovação (potenciômetro revisado: soldado na placa, botão na lateral direita)
+Data: 2026-11-23 · Status: **aprovado** pelo usuário (2026-11-23)
 
 ## Por quê
 
