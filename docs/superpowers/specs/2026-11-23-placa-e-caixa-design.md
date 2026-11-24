@@ -1,6 +1,6 @@
 # Placa de circuito e caixa do assistente "Hi ESP" — design
 
-Data: 2026-11-23 · Status: aguardando aprovação
+Data: 2026-11-23 · Status: aguardando aprovação (potenciômetro revisado: soldado na placa, botão na lateral direita)
 
 ## Por quê
 
@@ -41,7 +41,7 @@ amplificador, e não dá para deixar na mesa.
 | INMP441 (módulo redondo, furo na face de cima) | barra fêmea na placa, furo apontando para o topo |
 | MAX98357A (módulo roxo com borne verde) | barra fêmea na placa |
 | Alto-falante 4 Ω, Ø 40 mm × 20 mm | preso na frente da caixa; 2 fios até o borne do MAX98357A |
-| Potenciômetro 10 kΩ **de painel** (rosca + porca; assumido: rosca M7, eixo serrilhado Ø 6 mm, corpo Ø 16 mm) | preso no topo da caixa pela porca; 3 fios com conector até a placa |
+| Potenciômetro B10K tipo **WH148** (pinos de placa + rosca; eixo **paralelo** à placa; padrão: corpo Ø 16 mm, rosca M7, eixo serrilhado Ø 6 mm, pinos a 5 mm) | **soldado direto na borda da placa**; o eixo atravessa a **lateral direita** da caixa; a porca não é usada |
 | 1 ou 2 capacitores eletrolíticos (até Ø 10 mm, ex. 1000 µF / 10 V) | soldados na placa, em paralelo entre 5V e GND |
 
 ## Ligações (iguais à protoboard; ver docs/ligacoes.png)
@@ -62,7 +62,7 @@ amplificador, e não dá para deixar na mesa.
 ```
   vista lateral (frente à esquerda)           vista de cima
   ┌──────────────┐  ← topo                   ┌──────────────┐
-  │▄▄▄▄▄▄▄▄▄▄▄▄▄▄│  ← placa deitada          │ ○mic  ◎vol  ▫LED │
+  │▄▄▄▄▄▄▄▄▄▄▄▄▄▄│  ← placa deitada          │ ○mic     ▫LED │
   │              │                           └──────────────┘
   │░(◯)          │  ← alto-falante + câmara fechada
   │░             │
@@ -71,7 +71,8 @@ amplificador, e não dá para deixar na mesa.
 
 - **Uma placa só, deitada logo abaixo do topo**, com o ESP32, o INMP441, o MAX98357A e os capacitores. Ela **desliza em trilhos** e sai pela traseira.
 - **Traseira removível** presa por parafusos M3 em **insertos de latão** (aguentam muitas aberturas). Tem o recorte do USB-C.
-- **Topo** (fixo, parte do corpo): furo do microfone (~2–3 mm) com anel de vedação de espuma/borracha até o módulo; furo do potenciômetro (rosca + trava anti-giro); janela do LED (parede fina ou peça translúcida) sobre o LED RGB da YD-ESP32-S3.
+- **Topo** (fixo, parte do corpo): furo do microfone (~2–3 mm) com anel de vedação de espuma/borracha até o módulo; janela do LED (parede fina ou peça translúcida) sobre o LED RGB da YD-ESP32-S3.
+- **Lateral direita, no alto**: furo para o eixo do potenciômetro (soldado na borda da placa). O botão é de encaixe por pressão: para tirar a placa, puxa-se o botão e a placa desliza pela traseira, com o eixo saindo pelo furo.
 - **Frente**: grade de furos para o alto-falante; o alto-falante fica preso por dentro (anel com parafusos ou encaixe) com vedação.
 - **Parede interna** separando a **câmara fechada do alto-falante** (embaixo, ~50 × 50 × 40 mm internos) da eletrônica (em cima). Passagem selada para os 2 fios do alto-falante.
 - Tamanho estimado: **~80 × 80 × 110 mm** (largura × profundidade × altura), a confirmar no desenho.
@@ -83,7 +84,7 @@ amplificador, e não dá para deixar na mesa.
 - Módulos em **barras de pinos fêmea** (trocáveis), não soldados direto.
 - **Duas posições para capacitores** eletrolíticos em paralelo entre 5V e GND, coladas no VIN/GND do MAX98357A, faixa "−" das duas do mesmo lado, até Ø 10 mm; furação que permite montar em pé ou deitado.
 - **Seletor de ganho do MAX98357A** na placa (jumper de 3 posições: solto = 9 dB, GND = 12 dB, 100 kΩ ao GND = 15 dB) — nos testes 15 dB fez o amplificador cortar; o padrão recomendado é 12 dB.
-- O alto-falante liga no **borne do próprio MAX98357A**; os fios têm folga para puxar a placa alguns centímetros e soltar o borne. O potenciômetro liga num **conector de 3 vias** (ex. JST-XH) na placa, para desconectar ao tirá-la.
+- O alto-falante liga no **borne do próprio MAX98357A**; os fios têm folga para puxar a placa alguns centímetros e soltar o borne. O potenciômetro é **soldado na borda direita da placa**, com o eixo para fora (sem fios nem conector).
 - Trilhas de 5V e GND do amplificador **largas e curtas**; plano de GND.
 - **Antena do ESP32 sobrando para fora da borda da placa**, sem cobre embaixo, longe de fios.
 - Furos de fixação/guia compatíveis com os trilhos da caixa.
@@ -93,7 +94,8 @@ amplificador, e não dá para deixar na mesa.
 - Medidas exatas da YD-ESP32-S3 (pitch entre as fileiras de pinos, posição do LED, do USB-C e da antena) — conferir no desenho oficial/medição.
 - Posição exata de cada módulo na placa (respeitando: mic perto da borda do topo e longe do alto-falante; MAX98357A perto da parede interna/alto-falante; antena para fora).
 - Espessuras de parede (sugestão 2–2,4 mm), folgas (0,2–0,3 mm) e tamanho da grade.
-- Confirmar com o usuário as medidas do potenciômetro antes de imprimir.
+- Confirmar com o usuário as medidas do potenciômetro (régua) antes de encomendar a placa.
+- Botão (knob) para eixo serrilhado de 6 mm: comprado ou impresso.
 
 ## Ordem
 
