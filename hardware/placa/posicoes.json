@@ -1,0 +1,43 @@
+{
+  "placa": {
+    "largura": 72.0,
+    "profundidade": 68.0,
+    "espessura": 1.6,
+    "entalhe_antena": {
+      "x0": 6.5,
+      "x1": 27.5,
+      "y0": 55.5
+    }
+  },
+  "usb_c": {
+    "x": 10.0,
+    "y_borda": 0.0,
+    "largura": 9,
+    "altura": 3.3,
+    "altura_sobre_placa": 11.75
+  },
+  "led": {
+    "x": 17.0,
+    "y": 12,
+    "altura_sobre_placa": 10.1
+  },
+  "mic": {
+    "furo_x": 50.0,
+    "furo_y": 18.0,
+    "altura_sobre_placa": 10.1
+  },
+  "pot": {
+    "eixo_y": 35.0,
+    "eixo_dir": [
+      1,
+      0
+    ],
+    "corpo_borda_x": 72.0,
+    "eixo_altura_sobre_placa": 8.0
+  },
+  "esp": {
+    "x": 3.0,
+    "comprimento": 63.5,
+    "largura": 28
+  }
+}
