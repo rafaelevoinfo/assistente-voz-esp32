@@ -45,6 +45,7 @@ static int16_t silencio[BLOCO_AMOSTRAS];
 
 // Estatísticas do segmento atual (só a task escreve; o loop lê depois do fim).
 static volatile uint32_t estAmostras = 0, estFaltas = 0, estRecusados = 0, estPico = 0;
+static TaskHandle_t taskHandle = nullptr;
 
 static void escrever(const int16_t *dados, size_t bytes) {
   size_t ok = spk.write(dados, bytes);
@@ -154,7 +155,7 @@ bool altoFalanteIniciar() {
     return false;
   }
   // Core 0, junto do Wi-Fi; o loop() (core 1) fica livre para o mic e a rede.
-  if (xTaskCreatePinnedToCore(taskAltoFalante, "AltoFalante", 4096, nullptr, 5, nullptr, 0) != pdPASS) {
+  if (xTaskCreatePinnedToCore(taskAltoFalante, "AltoFalante", 8192, nullptr, 5, &taskHandle, 0) != pdPASS) {
     logMsg("ERRO: falha ao criar a task do alto-falante");
     return false;
   }
@@ -211,9 +212,11 @@ void altoFalanteFim() {
 }
 
 void altoFalanteResumo(char *saida, size_t tam) {
-  snprintf(saida, tam, "%u amostras (%u ms), pico %u, faltas de audio %u, bytes recusados pelo I2S %u",
+  snprintf(saida, tam, "%u amostras (%u ms), pico %u, faltas de audio %u, bytes recusados pelo I2S %u, "
+           "pilha livre da task %u",
            (unsigned)estAmostras, (unsigned)(estAmostras * 1000ULL / TAXA_PADRAO), (unsigned)estPico,
-           (unsigned)estFaltas, (unsigned)estRecusados);
+           (unsigned)estFaltas, (unsigned)estRecusados,
+           taskHandle ? (unsigned)uxTaskGetStackHighWaterMark(taskHandle) : 0u);
 }
 
 bool altoFalanteTerminou() {

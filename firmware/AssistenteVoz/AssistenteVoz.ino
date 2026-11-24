@@ -173,8 +173,11 @@ static void atualizarLed() {
   else ledCor(0, LED_BRILHO, 0);
 }
 
+static void checarHeap(const char *ponto);
+
 static void mudarEstado(Estado novo) {
   if (novo == estado) return;
+  checarHeap("antes de mudarEstado");
   logMsg("estado: %s -> %s", NOMES_ESTADO[estado], NOMES_ESTADO[novo]);
   Estado anterior = estado;
   estado = novo;
@@ -193,6 +196,7 @@ static void mudarEstado(Estado novo) {
   } else {
     audioPausarWake();
   }
+  checarHeap("depois de mudarEstado");
 }
 
 static bool tocando() { return recebendoAudio || tocandoFim; }
@@ -225,6 +229,23 @@ static bool jsonCampo(const char *json, const char *campo, char *saida, size_t t
   }
   saida[n] = '\0';
   return n > 0;
+}
+
+// ------------------------------------------------- diagnostico de memoria
+// Procura quem corrompe o heap interno: confere a integridade em varios pontos
+// do loop e registra o primeiro ponto em que a corrupcao aparece.
+#include <esp_heap_caps.h>
+static const char *ultimoPontoOk = "inicio";
+static bool heapOk = true;
+
+static void checarHeap(const char *ponto) {
+  if (!heapOk) return;
+  if (heap_caps_check_integrity(MALLOC_CAP_INTERNAL, false)) {
+    ultimoPontoOk = ponto;
+    return;
+  }
+  heapOk = false;
+  logMsg("HEAP CORROMPIDO: detectado em '%s' (ultimo ponto ok: '%s')", ponto, ultimoPontoOk);
 }
 
 // ---------------------------------------------------------- potenciometro
@@ -354,7 +375,9 @@ static void aoBinario(const uint8_t *dados, size_t n) {
     logMsg("audio fora de audio_start/audio_end ignorado (%u bytes)", (unsigned)n);
     return;
   }
+  checarHeap("antes de altoFalanteAudio");
   altoFalanteAudio(dados, n);
+  checarHeap("depois de altoFalanteAudio");
   bytesPendentes += n;
 }
 
@@ -515,9 +538,12 @@ void loop() {
     }
   }
 
+  checarHeap("topo do loop");
   ws.loop();
+  checarHeap("depois do ws.loop");
   audioManutencao();
   lerPotenciometro();
+  checarHeap("depois do potenciometro");
 
   // Wake word
   if (audioPegarWake()) {
@@ -557,13 +583,16 @@ void loop() {
   bool micMudo = (int32_t)(millis() - micMudoAte) < 0;  // descarta o proprio bipe
   if (estado == AGUARDANDO_LISTEN) {
     if (audioLerFrame(frameMic) && !micMudo) filaInserir(frameMic);
+    checarHeap("leitura do mic (aguardando)");
   } else if (estado == ENVIANDO_MIC && conectado) {
     if (audioLerFrame(frameMic) && !micMudo) filaInserir(frameMic);
+    checarHeap("leitura do mic (enviando)");
     for (int i = 0; i < FILA_MIC_SAIDA_POR_LOOP; i++) {
       const int16_t *f = filaRetirar();
       if (!f) break;
       ws.sendBIN((uint8_t *)f, sizeof(frameMic));
     }
+    checarHeap("envio do mic");
   } else {
     delay(2);
   }
