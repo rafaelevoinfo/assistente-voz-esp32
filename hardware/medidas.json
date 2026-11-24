@@ -1,19 +1,58 @@
 {
   "_nota": "Medidas em mm. Fonte única para a placa (KiCad) e a caixa (OpenSCAD). Valores em 'a_confirmar' ainda precisam ser medidos com régua antes de encomendar a placa.",
-  "_a_confirmar": ["esp.pitch_fileiras", "esp.usb_c.y", "esp.led.x", "esp.led.y", "esp.antena.comprimento", "mic.diametro", "amp.comprimento", "amp.largura", "pot.rosca", "pot.eixo_comprimento", "pot.pitch_pinos"],
-  "_coordenadas": "esp: origem no canto da placa do lado dos USB-C; x ao longo do comprimento (a partir da borda dos USB-C), y ao longo da largura. mic.furo: relativo ao centro do módulo.",
+  "_a_confirmar": [
+    "mic.pitch_fileiras"
+  ],
+  "_coordenadas": "esp: origem no canto da placa do lado dos USB-C, olhando de cima com os USB-C para cima; x ao longo do comprimento (a partir da borda dos USB-C), y ao longo da largura (a partir da borda esquerda). usb_c é o conector da direita (USB nativo, o usado). mic.furo: relativo ao centro do módulo.",
   "esp": {
     "comprimento": 63.5,
     "largura": 28,
     "pitch_fileiras": 25.4,
-    "usb_c": {"x": 0, "y": 7, "largura": 9, "altura": 3.3},
-    "led": {"x": 12, "y": 14},
-    "antena": {"comprimento": 7}
+    "usb_c": {
+      "x": 0,
+      "y": 21,
+      "largura": 9,
+      "altura": 3.3
+    },
+    "led": {
+      "x": 20,
+      "y": 19
+    },
+    "antena": {
+      "comprimento": 7
+    }
   },
-  "mic": {"diametro": 14, "furo": {"x": 0, "y": 0}},
-  "amp": {"comprimento": 18.5, "largura": 18},
-  "pot": {"corpo_diametro": 16, "rosca": 7, "eixo_diametro": 6, "eixo_comprimento": 15, "pitch_pinos": 5},
-  "falante": {"diametro": 40, "profundidade": 20},
-  "cap": {"diametro_max": 10},
-  "caixa": {"parede": 2.2, "folga": 0.25, "largura": 80, "profundidade": 80, "altura": 110}
+  "mic": {
+    "diametro": 14,
+    "pitch_fileiras": 7.62,
+    "furo": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "amp": {
+    "comprimento": 19,
+    "largura": 19
+  },
+  "pot": {
+    "corpo_diametro": 16,
+    "rosca": 7,
+    "eixo_diametro": 6,
+    "eixo_comprimento": 15,
+    "pitch_pinos": 5
+  },
+  "falante": {
+    "diametro": 40,
+    "profundidade": 20
+  },
+  "cap": {
+    "diametro_max": 10
+  },
+  "caixa": {
+    "parede": 2.2,
+    "folga": 0.25,
+    "largura": 80,
+    "profundidade": 80,
+    "altura": 110
+  }
 }

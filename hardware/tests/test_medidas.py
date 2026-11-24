@@ -10,7 +10,7 @@ CHAVES = [
     "esp.comprimento", "esp.largura", "esp.pitch_fileiras",
     "esp.usb_c.x", "esp.usb_c.y", "esp.usb_c.largura", "esp.usb_c.altura",
     "esp.led.x", "esp.led.y", "esp.antena.comprimento",
-    "mic.diametro", "mic.furo.x", "mic.furo.y",
+    "mic.diametro", "mic.pitch_fileiras", "mic.furo.x", "mic.furo.y",
     "amp.comprimento", "amp.largura",
     "pot.corpo_diametro", "pot.rosca", "pot.eixo_diametro", "pot.eixo_comprimento", "pot.pitch_pinos",
     "falante.diametro", "falante.profundidade",

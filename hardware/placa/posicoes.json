@@ -10,20 +10,20 @@
     }
   },
   "usb_c": {
-    "x": 10.0,
+    "x": 24.0,
     "y_borda": 0.0,
     "largura": 9,
     "altura": 3.3,
     "altura_sobre_placa": 11.75
   },
   "led": {
-    "x": 17.0,
-    "y": 12,
+    "x": 22.0,
+    "y": 20,
     "altura_sobre_placa": 10.1
   },
   "mic": {
     "furo_x": 50.0,
-    "furo_y": 18.0,
+    "furo_y": 16.0,
     "altura_sobre_placa": 10.1
   },
   "pot": {

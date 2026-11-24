@@ -39,8 +39,7 @@ POT_PINOS_X = W - 8.0             # fileira de pinos do WH148 (paralela à borda
 POT_Y = 35.0                      # centro do corpo / eixo
 AMP_PINOS_Y = 46.0                # fileira de pinos do MAX98357A (corpo para a frente)
 AMP_X0 = 34.0
-MIC_PINOS = (43.65, 12.0)         # pino 1 do INMP441
-MIC_CENTRO = (50.0, 18.0)         # centro do módulo redondo (furo para cima)
+MIC_CENTRO = (50.0, 16.0)         # centro do módulo redondo (furo para cima)
 
 
 def v(x, y):
@@ -168,8 +167,12 @@ def serigrafia(placa):
     texto(placa, ESP_X + esp["largura"] / 2, ANTENA_Y0 - 3, "antena ->", 0.9)
     raio_mic = M["mic"]["diametro"] / 2
     circulo(placa, MIC_CENTRO[0], MIC_CENTRO[1], raio_mic)
-    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + 2, "MIC", 1.2)
-    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + 4, "furo p/ cima", 0.8)
+    meia_mic = M["mic"]["pitch_fileiras"] / 2
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] - meia_mic - 2.0, "SD VDD GND", 0.7)
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + meia_mic + 2.0, "SCK WS L/R", 0.7)
+    texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] - 1, "MIC", 1.2)
+    texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] + 1, "furo p/", 0.8)
+    texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] + 2.4, "cima", 0.8)
     amp_x1 = AMP_X0 + 6 * P
     retangulo(placa, AMP_X0 - 2.2, AMP_PINOS_Y - 1.6, amp_x1 + 2.2, AMP_PINOS_Y + M["amp"]["comprimento"] - 1.6)
     texto(placa, (AMP_X0 + amp_x1) / 2, AMP_PINOS_Y + 7, "AMP MAX98357A", 1.0)
@@ -212,9 +215,12 @@ def montar() -> pcbnew.BOARD:
     pads_esp += [(22 + i, ROW_ESQ, PRIMEIRO_PINO_Y + (22 - i) * P) for i in range(1, 23)]
     footprint_proprio(placa, "U1", "YD-ESP32-S3", pads_esp)
 
-    # U2: INMP441 (1x6), mais para trás e à direita (longe do alto-falante).
+    # U2: INMP441 redondo, mais para trás e à direita (longe do alto-falante). Duas fileiras de 3
+    # frente a frente: 1-3 = SD, VDD, GND (lado de trás); 4-6 = SCK, WS, L/R (lado da frente).
+    meia = M["mic"]["pitch_fileiras"] / 2
     footprint_proprio(placa, "U2", "INMP441",
-                      [(i, MIC_PINOS[0] + (i - 1) * P, MIC_PINOS[1]) for i in range(1, 7)])
+                      [(i, MIC_CENTRO[0] + (i - 2) * P, MIC_CENTRO[1] - meia) for i in range(1, 4)]
+                      + [(i, MIC_CENTRO[0] + (i - 5) * P, MIC_CENTRO[1] + meia) for i in range(4, 7)])
 
     # U3: MAX98357A (1x7) perto da frente; corpo e borne do alto-falante para a frente.
     footprint_proprio(placa, "U3", "MAX98357A",

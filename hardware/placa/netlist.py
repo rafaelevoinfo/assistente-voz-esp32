@@ -13,7 +13,7 @@ FILEIRA_ESP_B = [f"B{i}" for i in range(1, 23)]
 # ref -> (valor, footprint, [nomes dos pinos, na ordem dos números 1..n])
 COMPONENTES = {
     "U1": ("YD-ESP32-S3", "assistente:YD_ESP32_S3_Soquete", FILEIRA_ESP + FILEIRA_ESP_B),
-    "U2": ("INMP441", "assistente:INMP441_Soquete", ["VDD", "GND", "L/R", "WS", "SCK", "SD"]),
+    "U2": ("INMP441", "assistente:INMP441_Soquete", ["SD", "VDD", "GND", "SCK", "WS", "L/R"]),
     "U3": ("MAX98357A", "assistente:MAX98357A_Soquete", ["LRC", "BCLK", "DIN", "GAIN", "SD", "GND", "VIN"]),
     "RV1": ("B10K WH148", "assistente:WH148_Horizontal", ["1", "2", "3"]),
     "C1": ("470-1000uF 10V", "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm", ["+", "-"]),
