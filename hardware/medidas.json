@@ -1,8 +1,6 @@
 {
-  "_nota": "Medidas em mm. Fonte única para a placa (KiCad) e a caixa (OpenSCAD). Valores em 'a_confirmar' ainda precisam ser medidos com régua antes de encomendar a placa.",
-  "_a_confirmar": [
-    "mic.pitch_fileiras"
-  ],
+  "_nota": "Medidas em mm. Fonte única para a placa (KiCad) e a caixa (OpenSCAD). Todas conferidas pelo usuário com régua/foto em 2026-11-23.",
+  "_a_confirmar": [],
   "_coordenadas": "esp: origem no canto da placa do lado dos USB-C, olhando de cima com os USB-C para cima; x ao longo do comprimento (a partir da borda dos USB-C), y ao longo da largura (a partir da borda esquerda). usb_c é o conector da direita (USB nativo, o usado). mic.furo: relativo ao centro do módulo.",
   "esp": {
     "comprimento": 63.5,
