@@ -126,6 +126,23 @@
 - [ ] **Step 4:** rodar → PASS.
 - [ ] **Step 5:** **Ponto de parada:** mostrar ao usuário os renders (topo/baixo) e a lista de peças; confirmar as medidas do potenciômetro com régua. Só seguir com aprovação. Commit.
 
+### Task 5b: Mapa de montagem da placa perfurada (decisão do usuário em 2026-11-26)
+
+**Files:**
+- Create: `hardware/perfurada/layout.py` (posição de cada pino na grade e lista de fios, a partir do `netlist.py`)
+- Create: `hardware/perfurada/desenhar.py` → `hardware/perfurada/{cima,baixo}.png` + `fios.md`
+- Test: `hardware/tests/test_perfurada.py`
+
+**Interfaces:**
+- Consumes: `netlist.COMPONENTES`, `netlist.NETS`, `medidas.json`.
+- Produces: `layout.GRADE = (colunas, linhas)`; `layout.furo(ref, numero) -> (col, lin)`; `layout.FIOS: list[(net, (col, lin), (col, lin))]`; `posicoes.json` da perfurada para a caixa.
+
+- [ ] **Step 1: Testes:** `test_cabe_na_placa_cortada` (todos os furos na grade de ~70 × 68 mm); `test_nenhum_furo_dividido`; `test_fileiras_do_esp_a_10_furos` (25,4 mm) e `test_fileiras_do_mic_a_3_furos` (7,62 mm); `test_todas_as_ligacoes_existem` (para cada net, os fios formam um caminho que liga todos os seus pinos); `test_nenhum_fio_liga_nets_diferentes` (fios só começam/terminam em pinos da própria net).
+- [ ] **Step 2:** rodar → FAIL.
+- [ ] **Step 3:** Implementar `layout.py` e `desenhar.py` (vista de baixo espelhada; cores por net como em docs/ligacoes.png; fios numerados).
+- [ ] **Step 4:** rodar → PASS; conferir as imagens.
+- [ ] **Step 5:** Commit; mostrar ao usuário.
+
 ### Task 6: Caixa paramétrica
 
 **Files:**

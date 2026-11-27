@@ -78,6 +78,24 @@ amplificador, e não dá para deixar na mesa.
 - Tamanho estimado: **~80 × 80 × 110 mm** (largura × profundidade × altura), a confirmar no desenho.
 - Material: **PLA** (uso doméstico, sem calor).
 
+## Atualização 2026-11-26: placa perfurada em vez de placa fabricada
+
+O pedido na JLCPCB ficou em ~US$ 27 (US$ 4 de placa + frete + impostos, ~R$ 160), caro demais para
+o usuário. **Decisão do usuário:** montar em **placa perfurada (ilhada) dupla face 7 × 9 cm**, cortada
+para ~70 × 68 mm, com as barras fêmea soldadas e as ligações feitas **com fio por baixo**.
+
+- O projeto no KiCad (hardware/placa) fica como referência e para uma futura encomenda; não é mais o
+  caminho principal.
+- Novo entregável: **mapa de montagem da placa perfurada** (vista de cima com a posição de cada
+  peça furo a furo, vista de baixo espelhada com o caminho de cada fio, lista numerada de fios),
+  gerado por script a partir do mesmo `netlist.py`, com testes de que todas as ligações existem e
+  nenhuma peça divide furo.
+- Mantido: arranjo (ESP com USB-C para trás, mic atrás à direita, amplificador na frente, pot na
+  borda direita), 2 capacitores, jumper de ganho 9/12/15 dB, medidas conferidas.
+- Perdido em relação à placa fabricada: planos de GND (compensado com fio de GND mais grosso até o
+  amplificador) e o entalhe sob a antena (as ilhas soltas embaixo da antena atrapalham pouco; se o
+  Wi-Fi ficar fraco, corta-se a ponta da placa sob a antena).
+
 ## Placa de circuito (decisões)
 
 - Desenhada no **KiCad**, 2 camadas, fabricada na JLCPCB/PCBWay; o usuário revisa visualmente (imagens 3D/renders) antes de encomendar.
