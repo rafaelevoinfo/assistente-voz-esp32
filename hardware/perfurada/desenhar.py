@@ -188,7 +188,7 @@ def main() -> None:
               "(coluna 0 à esquerda, linha 0 do lado dos USB-C). Na vista de baixo a placa fica espelhada: "
               "a coluna 0 passa para a direita. Fios **grossos** (22 AWG) são a alimentação; os demais, 26-30 AWG.",
               "", "**Use sempre fio encapado (cabinho):** os fios passam por cima de outras ilhas e, nus, dariam curto. "
-              "Desencape só ~2 mm nas pontas, passe pelo furo ao lado do pino e solde junto com ele.",
+              "Desencape só ~2 mm nas pontas e solde cada ponta direto na perna do pino, por baixo da placa.",
               "", "| Nº | Ligação | De | Para | Fio |", "|---|---|---|---|---|"]
     for i, (net, a, b) in enumerate(layout.FIOS, start=1):
         ra, na = pino_do_furo[a]
