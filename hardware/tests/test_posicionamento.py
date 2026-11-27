@@ -116,7 +116,7 @@ def test_mic_longe_da_frente(placa):
 def test_serigrafia_identifica_tudo(placa):
     textos = " ".join(t.GetText() for t in placa.GetDrawings()
                       if isinstance(t, pcbnew.PCB_TEXT) and t.GetLayer() == pcbnew.F_SilkS)
-    for rotulo in ("ESP32", "MIC", "AMP", "VOLUME", "12dB", "ALTO-FALANTE", "USB", "SD VDD GND", "SCK WS L/R"):
+    for rotulo in ("ESP32", "MIC", "AMP", "VOLUME", "12dB", "ALTO-FALANTE", "USB", "GND VDD SD", "L/R WS SCK"):
         assert rotulo in textos, rotulo
     # contorno de cada módulo desenhado na serigrafia (onde ele encaixa)
     contornos = [s for s in placa.GetDrawings()
@@ -125,7 +125,8 @@ def test_serigrafia_identifica_tudo(placa):
 
 
 def test_mic_em_duas_fileiras_de_tres(placa):
-    """INMP441 redondo: SD, VDD, GND de um lado; SCK, WS, L/R do outro (frente a frente)."""
+    """INMP441 redondo visto de cima (furo para cima): GND VDD SD numa fileira e L/R WS SCK na
+    outra, da esquerda para a direita, frente a frente (conferido pelo usuário no módulo)."""
     nomes = dict(zip(("1", "2", "3", "4", "5", "6"), ("SD", "VDD", "GND", "SCK", "WS", "L/R")))
     pos = {nomes[pad.GetNumber()]: (mm(pad.GetPosition().x), mm(pad.GetPosition().y)) for pad in fp(placa, "U2").Pads()}
     fileira_a = [pos["SD"], pos["VDD"], pos["GND"]]
@@ -134,6 +135,8 @@ def test_mic_em_duas_fileiras_de_tres(placa):
     assert abs(fileira_a[0][1] - fileira_b[0][1]) == pytest.approx(MEDIDAS["mic"]["pitch_fileiras"], abs=0.01)
     for (xa, _), (xb, _) in zip(fileira_a, fileira_b):
         assert xa == pytest.approx(xb, abs=0.01), "pinos de frente um para o outro"
+    assert pos["GND"][0] < pos["VDD"][0] < pos["SD"][0], "fileira GND VDD SD (esquerda->direita)"
+    assert pos["L/R"][0] < pos["WS"][0] < pos["SCK"][0], "fileira L/R WS SCK (esquerda->direita)"
 
 
 def test_usb_c_e_led_nas_medidas_da_foto():

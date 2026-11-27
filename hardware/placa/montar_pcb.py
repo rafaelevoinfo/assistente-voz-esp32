@@ -168,8 +168,8 @@ def serigrafia(placa):
     raio_mic = M["mic"]["diametro"] / 2
     circulo(placa, MIC_CENTRO[0], MIC_CENTRO[1], raio_mic)
     meia_mic = M["mic"]["pitch_fileiras"] / 2
-    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] - meia_mic - 2.0, "SD VDD GND", 0.7)
-    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + meia_mic + 2.0, "SCK WS L/R", 0.7)
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] - meia_mic - 2.0, "GND VDD SD", 0.7)
+    texto(placa, MIC_CENTRO[0], MIC_CENTRO[1] + meia_mic + 2.0, "L/R WS SCK", 0.7)
     texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] - 1, "MIC", 1.2)
     texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] + 1, "furo p/", 0.8)
     texto(placa, MIC_CENTRO[0] + 9.5, MIC_CENTRO[1] + 2.4, "cima", 0.8)
@@ -215,12 +215,13 @@ def montar() -> pcbnew.BOARD:
     pads_esp += [(22 + i, ROW_ESQ, PRIMEIRO_PINO_Y + (22 - i) * P) for i in range(1, 23)]
     footprint_proprio(placa, "U1", "YD-ESP32-S3", pads_esp)
 
-    # U2: INMP441 redondo, mais para trás e à direita (longe do alto-falante). Duas fileiras de 3
-    # frente a frente: 1-3 = SD, VDD, GND (lado de trás); 4-6 = SCK, WS, L/R (lado da frente).
+    # U2: INMP441 redondo, mais para trás e à direita (longe do alto-falante). Visto de cima (furo
+    # para cima), da esquerda para a direita: GND VDD SD (trás) e L/R WS SCK (frente), frente a
+    # frente. Números: 1 SD, 2 VDD, 3 GND, 4 SCK, 5 WS, 6 L/R.
     meia = M["mic"]["pitch_fileiras"] / 2
     footprint_proprio(placa, "U2", "INMP441",
-                      [(i, MIC_CENTRO[0] + (i - 2) * P, MIC_CENTRO[1] - meia) for i in range(1, 4)]
-                      + [(i, MIC_CENTRO[0] + (i - 5) * P, MIC_CENTRO[1] + meia) for i in range(4, 7)])
+                      [(i, MIC_CENTRO[0] - (i - 2) * P, MIC_CENTRO[1] - meia) for i in range(1, 4)]
+                      + [(i, MIC_CENTRO[0] - (i - 5) * P, MIC_CENTRO[1] + meia) for i in range(4, 7)])
 
     # U3: MAX98357A (1x7) perto da frente; corpo e borne do alto-falante para a frente.
     footprint_proprio(placa, "U3", "MAX98357A",
