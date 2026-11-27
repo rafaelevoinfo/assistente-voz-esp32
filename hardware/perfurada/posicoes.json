@@ -1,0 +1,39 @@
+{
+  "placa": {
+    "largura": 70.04,
+    "profundidade": 67.5,
+    "espessura": 1.6
+  },
+  "usb_c": {
+    "x": 24.24,
+    "y_borda": -0.54,
+    "largura": 9,
+    "altura": 3.3,
+    "altura_sobre_placa": 11.75
+  },
+  "led": {
+    "x": 22.24,
+    "y": 19.46,
+    "altura_sobre_placa": 10.1
+  },
+  "mic": {
+    "furo_x": 47.72,
+    "furo_y": 15.97,
+    "altura_sobre_placa": 10.1
+  },
+  "pot": {
+    "eixo_y": 29.94,
+    "eixo_dir": [
+      1,
+      0
+    ],
+    "corpo_borda_x": 70.04,
+    "eixo_altura_sobre_placa": 8.0
+  },
+  "esp": {
+    "x": 3.24,
+    "y": -0.54,
+    "comprimento": 63.5,
+    "largura": 28
+  }
+}
